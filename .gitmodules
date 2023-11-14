@@ -1,3 +1,6 @@
 [submodule "Kicad_footprints/Seeeduino"]
 	path = Kicad_footprints/Seeeduino
 	url = git@github.com:Seeed-Studio/OPL_Kicad_Library.git
+[submodule "Kicad_footprints/kleeb"]
+	path = Kicad_footprints/kleeb
+	url = git@github.com:crides/kleeb.git
