@@ -1,0 +1,3 @@
+[submodule "Kicad_footprints/Seeeduino"]
+	path = Kicad_footprints/Seeeduino
+	url = git@github.com:Seeed-Studio/OPL_Kicad_Library.git
