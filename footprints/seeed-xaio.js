@@ -13,6 +13,7 @@ module.exports = {
       const standard = `
         ${'' /* Add the kicad_mod content here*/}
         (footprint "xiao-ble-tht" (version 20211014) (generator pcbnew)
+        ${p.at /* parametric position */}
         (layer "F.Cu")
         (tedit 62108D0B)
         (attr smd exclude_from_pos_files)
@@ -33,20 +34,20 @@ module.exports = {
         (fp_arc (start -8.9 -8.5) (mid -8.301491 -9.901491) (end -6.9 -10.5) (layer "F.SilkS") (width 0.127))
 
         ${'' /*Pads connecting to the xiao*/}
-        (pad "1" thru_hole oval (at -7.62 -7.62) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask))
-        (pad "2" thru_hole oval (at -7.62 -5.08) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask))
-        (pad "3" thru_hole oval (at -7.62 -2.54) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask))
-        (pad "4" thru_hole oval (at -7.62 0) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask))
-        (pad "5" thru_hole oval (at -7.62 2.54) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask))
-        (pad "6" thru_hole oval (at -7.62 5.08) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask))
-        (pad "7" thru_hole oval (at -7.62 7.62) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask))
-        (pad "8" thru_hole oval (at 7.62 7.62 180) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask))
-        (pad "9" thru_hole oval (at 7.62 5.08 180) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask))
-        (pad "10" thru_hole oval (at 7.62 2.54 180) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask))
-        (pad "11" thru_hole oval (at 7.62 0 180) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask))
-        (pad "12" thru_hole oval (at 7.62 -2.54 180) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask))
-        (pad "13" thru_hole oval (at 7.62 -5.08 180) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask))
-        (pad "14" thru_hole oval (at 7.62 -7.62 180) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask))
+        (pad "1" thru_hole oval (at -7.62 -7.62 ${p.rot}) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask))
+        (pad "2" thru_hole oval (at -7.62 -5.08 ${p.rot}) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask))
+        (pad "3" thru_hole oval (at -7.62 -2.54 ${p.rot}) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask))
+        (pad "4" thru_hole oval (at -7.62 0 ${p.rot}) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask))
+        (pad "5" thru_hole oval (at -7.62 2.54 ${p.rot}) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask))
+        (pad "6" thru_hole oval (at -7.62 5.08 ${p.rot}) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask))
+        (pad "7" thru_hole oval (at -7.62 7.62 ${p.rot}) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask))
+        (pad "8" thru_hole oval (at 7.62 7.62 ${180 + p.rot}) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask))
+        (pad "9" thru_hole oval (at 7.62 5.08 ${180 + p.rot}) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask))
+        (pad "10" thru_hole oval (at 7.62 2.54 ${180 + p.rot}) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask))
+        (pad "11" thru_hole oval (at 7.62 0 ${180 + p.rot}) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask))
+        (pad "12" thru_hole oval (at 7.62 -2.54 ${180 + p.rot}) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask))
+        (pad "13" thru_hole oval (at 7.62 -5.08 ${180 + p.rot}) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask))
+        (pad "14" thru_hole oval (at 7.62 -7.62 ${180 + p.rot}) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask))
 
   `
       
@@ -68,21 +69,21 @@ module.exports = {
 
       const lable_txt = `
       ${'' /*Lettering on the silkscreen*/}
-      (fp_text user "XIAO" (at 0 0.5 unlocked) (layer "F.SilkS")
+      (fp_text user "XIAO" (at 0 0.5 ${p.rot}) (layer "F.SilkS")
       (effects (font (size 1 1) (thickness 0.15)))
       )
 
-      (fp_text user "Seeed Studio" (at 0 -1.5 unlocked) (layer "F.SilkS")
+      (fp_text user "Seeed Studio" (at 0 -1.5 ${p.rot}) (layer "F.SilkS")
           (effects (font (size 1 1) (thickness 0.15)))
       )
       `
       const reversable_lable_txt = `
       ${'' /*Lettering on the silkscreen*/}
-      (fp_text user "XIAO" (at 0 0.5 unlocked) (layer "B.SilkS")
+      (fp_text user "XIAO" (at 0 0.5 ${p.rot}) (layer "B.SilkS")
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       ) 
 
-      (fp_text user "Seeed Studio" (at 0 -1.5 unlocked) (layer "B.SilkS")
+      (fp_text user "Seeed Studio" (at 0 -1.5 ${p.rot}) (layer "B.SilkS")
           (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       )
       `
