@@ -79,10 +79,10 @@ module.exports = {
 
 
           //Left Front female
-          solder_pads += `\t\t(pad 1 smd custom (at -4.775 ${-7.62 + (i)*2.54} ${p.rot}) (size 0.2 0.2) (layers F.Cu F.Mask) ${pin_nets[i][0]}`
+          solder_pads += `\t\t(pad 1 smd custom (at -4.775 ${-7.62 + (i)*2.54} ${p.rot}) (size 0.2 0.2) (layers F.Cu F.Mask) ${pin_nets[i][1]}`
           solder_pads += female_pad
           //Right Front female
-          solder_pads += `\t\t(pad 1 smd custom (at 4.775 ${7.62 - (i)*2.54} ${180 + p.rot}) (size 0.2 0.2) (layers F.Cu F.Mask) ${pin_nets[6 - i][1]}`
+          solder_pads += `\t\t(pad 1 smd custom (at 4.775 ${7.62 - (i)*2.54} ${180 + p.rot}) (size 0.2 0.2) (layers F.Cu F.Mask) ${pin_nets[6 - i][0]}`
           solder_pads += female_pad
           //Left VIAS
           solder_pads += `\t\t(pad 1 thru_hole circle (at -3.262 ${-7.62 + (i)*2.54}) (size 0.8 0.8) (drill 0.4) (layers *.Cu *.Mask) ${pin_nets[i][0]})\n`
@@ -96,11 +96,11 @@ module.exports = {
           solder_pads += male_pad
           
           //Left Front female
-          solder_pads += `\t\t(pad 1 smd custom (at 4.775 ${-7.62 + (i)*2.54} ${180 + p.rot}) (size 0.2 0.2) (layers B.Cu B.Mask) ${pin_nets[i][0]}`
+          solder_pads += `\t\t(pad 1 smd custom (at 4.775 ${-7.62 + (i)*2.54} ${180 + p.rot}) (size 0.2 0.2) (layers B.Cu B.Mask) ${pin_nets[i][1]}`
           solder_pads += female_pad
           
           //Right Front female
-          solder_pads += `\t\t(pad 1 smd custom (at -4.775 ${7.62 - (i)*2.54} ${p.rot}) (size 0.2 0.2) (layers B.Cu B.Mask) ${pin_nets[6 - i][1]}`
+          solder_pads += `\t\t(pad 1 smd custom (at -4.775 ${7.62 - (i)*2.54} ${p.rot}) (size 0.2 0.2) (layers B.Cu B.Mask) ${pin_nets[6 - i][0]}`
           solder_pads += female_pad
           
           //Right VIAS
@@ -124,32 +124,6 @@ module.exports = {
       const standard = `
 ${'' /* Add the kicad_mod content here*/}
 (footprint "xiao-ble-tht" (version 20211014) (generator pcbnew)
-${p.at /* parametric position */}
-(layer "F.Cu")
-(tedit 62108D0B)
-(attr smd exclude_from_pos_files)
-
-${'' /*Box outlining the front usb-c port*/}
-(fp_rect (start 4.5 -4.5) (end -4.5 -11.92403) (layer "F.SilkS") (width 0.127) (fill none))
-
-${'' /*Box outlining the front body*/}
-(fp_line (start 8.9 8.5) (end 8.9 -8.5) (layer "F.SilkS") (width 0.127))
-(fp_line (start -8.9 -8.5) (end -8.9 8.5) (layer "F.SilkS") (width 0.127))
-(fp_line (start 6.9 -10.5) (end -6.9 -10.5) (layer "F.SilkS") (width 0.127))
-(fp_line (start -6.9 10.5) (end 6.9 10.5) (layer "F.SilkS") (width 0.127))
-(fp_arc (start 8.9 8.5) (mid 8.314214 9.914214) (end 6.9 10.5) (layer "F.SilkS") (width 0.127))
-(fp_arc (start 6.9 -10.5) (mid 8.301491 -9.901491) (end 8.9 -8.5) (layer "F.SilkS") (width 0.127))
-(fp_arc (start -6.9 10.5) (mid -8.301423 9.901423) (end -8.9 8.5) (layer "F.SilkS") (width 0.127))
-(fp_arc (start -8.9 -8.5) (mid -8.301491 -9.901491) (end -6.9 -10.5) (layer "F.SilkS") (width 0.127))
-
-${'' /*Getting the through holes*/}
-${get_thru_hole()}
-
-        `
-      
-      const reversable_txt = `
-(
-  footprint "xiao-ble-tht" (version 20211014) (generator pcbnew)
   ${p.at /* parametric position */}
   (layer "F.Cu")
   (tedit 62108D0B)
@@ -168,25 +142,51 @@ ${get_thru_hole()}
   (fp_arc (start -6.9 10.5) (mid -8.301423 9.901423) (end -8.9 8.5) (layer "F.SilkS") (width 0.127))
   (fp_arc (start -8.9 -8.5) (mid -8.301491 -9.901491) (end -6.9 -10.5) (layer "F.SilkS") (width 0.127))
 
-  ${'' /*Box outlining the back usb-c port*/}
-  (fp_rect (start 4.5 -4.5) (end -4.5 -11.92403) (layer "B.SilkS") (width 0.127) (fill none))
+${'' /*Getting the through holes*/}
+${get_thru_hole()}
 
-  ${'' /*Box outlining the back body*/}
-  (fp_line (start 8.9 8.5) (end 8.9 -8.5) (layer "B.SilkS") (width 0.127))
-  (fp_line (start -8.9 -8.5) (end -8.9 8.5) (layer "B.SilkS") (width 0.127))
-  (fp_line (start 6.9 -10.5) (end -6.9 -10.5) (layer "B.SilkS") (width 0.127))
-  (fp_line (start -6.9 10.5) (end 6.9 10.5) (layer "B.SilkS") (width 0.127))
-  (fp_arc (start 8.9 8.5) (mid 8.314214 9.914214) (end 6.9 10.5) (layer "B.SilkS") (width 0.127))
-  (fp_arc (start 6.9 -10.5) (mid 8.301491 -9.901491) (end 8.9 -8.5) (layer "B.SilkS") (width 0.127))
-  (fp_arc (start -6.9 10.5) (mid -8.301423 9.901423) (end -8.9 8.5) (layer "B.SilkS") (width 0.127))
-  (fp_arc (start -8.9 -8.5) (mid -8.301491 -9.901491) (end -6.9 -10.5) (layer "B.SilkS") (width 0.127))
+`
+      
+      const reversable_txt = `
+(
+  footprint "xiao-ble-tht" (version 20211014) (generator pcbnew)
+    ${p.at /* parametric position */}
+    (layer "F.Cu")
+    (tedit 62108D0B)
+    (attr smd exclude_from_pos_files)
 
-      ${'' /*Getting the through holes*/}
-      ${get_thru_hole()}
+    ${'' /*Box outlining the front usb-c port*/}
+    (fp_rect (start 4.5 -4.5) (end -4.5 -11.92403) (layer "F.SilkS") (width 0.127) (fill none))
 
-      ${'' /*Getting the solder pads*/}
-      ${get_solder_pads()}      
-      `
+    ${'' /*Box outlining the front body*/}
+    (fp_line (start 8.9 8.5) (end 8.9 -8.5) (layer "F.SilkS") (width 0.127))
+    (fp_line (start -8.9 -8.5) (end -8.9 8.5) (layer "F.SilkS") (width 0.127))
+    (fp_line (start 6.9 -10.5) (end -6.9 -10.5) (layer "F.SilkS") (width 0.127))
+    (fp_line (start -6.9 10.5) (end 6.9 10.5) (layer "F.SilkS") (width 0.127))
+    (fp_arc (start 8.9 8.5) (mid 8.314214 9.914214) (end 6.9 10.5) (layer "F.SilkS") (width 0.127))
+    (fp_arc (start 6.9 -10.5) (mid 8.301491 -9.901491) (end 8.9 -8.5) (layer "F.SilkS") (width 0.127))
+    (fp_arc (start -6.9 10.5) (mid -8.301423 9.901423) (end -8.9 8.5) (layer "F.SilkS") (width 0.127))
+    (fp_arc (start -8.9 -8.5) (mid -8.301491 -9.901491) (end -6.9 -10.5) (layer "F.SilkS") (width 0.127))
+
+    ${'' /*Box outlining the back usb-c port*/}
+    (fp_rect (start 4.5 -4.5) (end -4.5 -11.92403) (layer "B.SilkS") (width 0.127) (fill none))
+
+    ${'' /*Box outlining the back body*/}
+    (fp_line (start 8.9 8.5) (end 8.9 -8.5) (layer "B.SilkS") (width 0.127))
+    (fp_line (start -8.9 -8.5) (end -8.9 8.5) (layer "B.SilkS") (width 0.127))
+    (fp_line (start 6.9 -10.5) (end -6.9 -10.5) (layer "B.SilkS") (width 0.127))
+    (fp_line (start -6.9 10.5) (end 6.9 10.5) (layer "B.SilkS") (width 0.127))
+    (fp_arc (start 8.9 8.5) (mid 8.314214 9.914214) (end 6.9 10.5) (layer "B.SilkS") (width 0.127))
+    (fp_arc (start 6.9 -10.5) (mid 8.301491 -9.901491) (end 8.9 -8.5) (layer "B.SilkS") (width 0.127))
+    (fp_arc (start -6.9 10.5) (mid -8.301423 9.901423) (end -8.9 8.5) (layer "B.SilkS") (width 0.127))
+    (fp_arc (start -8.9 -8.5) (mid -8.301491 -9.901491) (end -6.9 -10.5) (layer "B.SilkS") (width 0.127))
+
+    ${'' /*Getting the through holes*/}
+    ${get_thru_hole()}
+
+    ${'' /*Getting the solder pads*/}
+     ${get_solder_pads()}      
+     `
 
       const lable_txt = `
       ${'' /*Lettering on the silkscreen*/}
