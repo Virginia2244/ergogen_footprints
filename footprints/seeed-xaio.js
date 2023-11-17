@@ -27,20 +27,22 @@ module.exports = {
         [`${p.P4.str}`, `${p.P9.str}`],
         [`${p.P5.str}`, `${p.P8.str}`],
         [`${p.P6.str}`, `${p.P7.str}`],]
-        const spacing = {
-          top_left_pin:  {x: -7.62, y: -7.62},
-          top_right_pin: {x: 7.62, y: -8.62}, 
-          pin_dist: 2.54,
-          total_pin_num: 14,
-          half_pin_num: 7,
-          pin_to_male_pad: 2,
-          pin_to_female_pad: 2.845,
-          pin_to_via: 4.358,
-        }
+
+      const spacing = {
+        top_left_pin:  {x: -7.62, y: -7.62},
+        top_right_pin: {x: 7.62, y: -7.62}, 
+        pin_dist: 2.54,
+        total_pin_num: 14,
+        half_pin_num: 7,
+        pin_to_male_pad: 2,
+        pin_to_female_pad: 2.845,
+        pin_to_via: 4.358,
+      }
+
       const get_thru_hole = () => {
         let thru_hole = ''
         for (let i = 0; i < 7; i++) {
-          thru_hole += `(pad ${i} thru_hole oval (at ${spacing.top_left_pin.x} ${spacing.top_left_pin.y + (i)*spacing.pin_dist} ${p.rot}) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask) ${p.reversable ? p.local_net(i).str : pin_nets[i][0]})\n`
+          thru_hole += `(pad ${i}                             thru_hole oval (at ${spacing.top_left_pin.x}  ${spacing.top_left_pin.y + (i)*spacing.pin_dist}  ${p.rot})       (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask) ${p.reversable ? p.local_net(i).str : pin_nets[i][0]})\n`
           thru_hole += `(pad ${spacing.total_pin_num - 1 - i} thru_hole oval (at ${spacing.top_right_pin.x} ${spacing.top_right_pin.y + (i)*spacing.pin_dist} ${180 + p.rot}) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask) ${p.reversable ? p.local_net(spacing.total_pin_num - 1 - i).str : pin_nets[6 - i][1]})\n`
         }
         return thru_hole
@@ -132,7 +134,7 @@ module.exports = {
         }
       }
 
-    const adjust_point = (x, y) => {
+      const adjust_point = (x, y) => {
         const at_l = get_at_coordinates();
         if(at_l == null) {
             throw new Error(
@@ -153,7 +155,7 @@ module.exports = {
 
         const point_str = `${nx.toFixed(2)} ${ny.toFixed(2)}`;
         return point_str;
-    }
+      }
     /*End of swiped code*/
 
       const get_traces = () => {
@@ -280,6 +282,5 @@ ${get_thru_hole()}
 				)
         ${p.traces ? (p.reversable ? get_traces() : '') : ''}
       `
-    
     }
   }
