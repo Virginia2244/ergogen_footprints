@@ -27,12 +27,21 @@ module.exports = {
         [`${p.P4.str}`, `${p.P9.str}`],
         [`${p.P5.str}`, `${p.P8.str}`],
         [`${p.P6.str}`, `${p.P7.str}`],]
-
+        const spacing = {
+          top_left_pin:  {x: -7.62, y: -7.62},
+          top_right_pin: {x: 7.62, y: -8.62}, 
+          pin_dist: 2.54,
+          total_pin_num: 14,
+          half_pin_num: 7,
+          pin_to_male_pad: 2,
+          pin_to_female_pad: 2.845,
+          pin_to_via: 4.358,
+        }
       const get_thru_hole = () => {
         let thru_hole = ''
         for (let i = 0; i < 7; i++) {
-          thru_hole += `(pad "${i}" thru_hole oval (at -7.62 ${-7.62 + (i)*2.54} ${p.rot}) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask) ${p.reversable ? p.local_net(i).str : pin_nets[i][0]})\n`
-          thru_hole += `(pad "${i + 6}" thru_hole oval (at 7.62 ${7.62 - (i)*2.54} ${180 + p.rot}) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask) ${p.reversable ? p.local_net(i + 7).str : pin_nets[i][1]})\n`
+          thru_hole += `(pad ${i} thru_hole oval (at ${spacing.top_left_pin.x} ${spacing.top_left_pin.y + (i)*spacing.pin_dist} ${p.rot}) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask) ${p.reversable ? p.local_net(i).str : pin_nets[i][0]})\n`
+          thru_hole += `(pad ${spacing.total_pin_num - 1 - i} thru_hole oval (at ${spacing.top_right_pin.x} ${spacing.top_right_pin.y + (i)*spacing.pin_dist} ${180 + p.rot}) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask) ${p.reversable ? p.local_net(spacing.total_pin_num - 1 - i).str : pin_nets[6 - i][1]})\n`
         }
         return thru_hole
       };
@@ -68,47 +77,51 @@ module.exports = {
 
       const get_solder_pads = () => {
         let solder_pads = ''
-        for (let i = 0; i < 7; i++) {
+        for (let i = 0; i < (spacing.half_pin_num); i++) {
+          //Left VIAS
+          solder_pads += `\t\t(pad ${i} thru_hole circle (at ${spacing.top_left_pin.x + spacing.pin_to_via} ${spacing.top_left_pin.y + (i)*spacing.pin_dist}) (size 0.8 0.8) (drill 0.4) (layers *.Cu *.Mask) ${pin_nets[6 - i][0]})\n`
+          
           //Left Front male
-          solder_pads += `\t\t(pad 1 smd custom (at -5.62 ${-7.62 + (i)*2.54} ${p.rot}) (size 0.2 0.2) (layers F.Cu F.Mask) ${p.local_net(i).str}`
+          solder_pads += `\t\t(pad ${i} smd custom (at ${spacing.top_left_pin.x + spacing.pin_to_male_pad} ${spacing.top_left_pin.y + (i)*spacing.pin_dist} ${p.rot}) (size 0.2 0.2) (layers F.Cu F.Mask) ${p.local_net(i).str}`
           solder_pads += male_pad
+          
+          //Left Front female
+          solder_pads += `\t\t(pad ${spacing.total_pin_num - 1 - i} smd custom (at ${spacing.top_left_pin.x + spacing.pin_to_female_pad} ${spacing.top_left_pin.y + (i)*spacing.pin_dist} ${p.rot}) (size 0.2 0.2) (layers F.Cu F.Mask) ${pin_nets[6 - i][1]}`
+          solder_pads += female_pad
+          
+          //Left Back male
+          solder_pads += `\t\t(pad ${i} smd custom (at ${spacing.top_left_pin.x + spacing.pin_to_male_pad} ${spacing.top_left_pin.y + (i)*spacing.pin_dist} ${p.rot}) (size 0.2 0.2) (layers B.Cu B.Mask) ${p.local_net(i).str}`
+          solder_pads += male_pad
+
+          //Left Back female
+          solder_pads += `\t\t(pad ${i} smd custom (at ${spacing.top_left_pin.x + spacing.pin_to_female_pad} ${spacing.top_left_pin.y + (i)*spacing.pin_dist} ${p.rot}) (size 0.2 0.2) (layers B.Cu B.Mask) ${pin_nets[6 - i][0]}`
+          solder_pads += female_pad
+        
+
+          //Right VIAS
+          solder_pads += `\t\t(pad ${spacing.total_pin_num - 1 - i} thru_hole circle (at ${spacing.top_right_pin.x - spacing.pin_to_via} ${spacing.top_right_pin.y + (i)*spacing.pin_dist}) (size 0.8 0.8) (drill 0.4) (layers *.Cu *.Mask) ${pin_nets[6 - i][1]})\n`
+          
+          //Right Back male
+          solder_pads += `\t\t(pad ${spacing.total_pin_num - 1 - i} smd custom (at ${spacing.top_right_pin.x - spacing.pin_to_male_pad} ${spacing.top_right_pin.y + (i)*spacing.pin_dist} ${180 + p.rot}) (size 0.2 0.2) (layers B.Cu B.Mask) ${p.local_net(spacing.total_pin_num - 1 - i).str}`
+          solder_pads += male_pad
+          
+          //Right Back female
+          solder_pads += `\t\t(pad ${spacing.total_pin_num - 1 - i} smd custom (at ${spacing.top_right_pin.x - spacing.pin_to_female_pad} ${spacing.top_right_pin.y + (i)*spacing.pin_dist} ${180 + p.rot}) (size 0.2 0.2) (layers B.Cu B.Mask) ${pin_nets[6 - i][1]}`
+          solder_pads += female_pad
+
+          //Right Front female
+          solder_pads += `\t\t(pad ${i} smd custom (at ${spacing.top_right_pin.x - spacing.pin_to_female_pad} ${spacing.top_right_pin.y + (i)*spacing.pin_dist} ${180 + p.rot}) (size 0.2 0.2) (layers F.Cu F.Mask) ${pin_nets[6 - i][0]}`
+          solder_pads += female_pad
 
           //Right Front male
-          solder_pads += `\t\t(pad 1 smd custom (at 5.62 ${7.62 - (i)*2.54} ${180 + p.rot}) (size 0.2 0.2) (layers F.Cu F.Mask) ${p.local_net(i + 7).str}`
+          solder_pads += `\t\t(pad ${spacing.total_pin_num - 1 - i} smd custom (at ${spacing.top_right_pin.x - spacing.pin_to_male_pad} ${spacing.top_right_pin.y + (i)*spacing.pin_dist} ${180 + p.rot}) (size 0.2 0.2) (layers F.Cu F.Mask) ${p.local_net(spacing.total_pin_num - 1 - i).str}`
           solder_pads += male_pad
-
-
-          //Left Front female
-          solder_pads += `\t\t(pad 1 smd custom (at -4.775 ${-7.62 + (i)*2.54} ${p.rot}) (size 0.2 0.2) (layers F.Cu F.Mask) ${pin_nets[i][1]}`
-          solder_pads += female_pad
-          //Right Front female
-          solder_pads += `\t\t(pad 1 smd custom (at 4.775 ${7.62 - (i)*2.54} ${180 + p.rot}) (size 0.2 0.2) (layers F.Cu F.Mask) ${pin_nets[6 - i][0]}`
-          solder_pads += female_pad
-          //Left VIAS
-          solder_pads += `\t\t(pad 1 thru_hole circle (at -3.262 ${-7.62 + (i)*2.54}) (size 0.8 0.8) (drill 0.4) (layers *.Cu *.Mask) ${pin_nets[i][0]})\n`
-
-          //Left Back male
-          solder_pads += `\t\t(pad 1 smd custom (at -5.62 ${-7.62 + (i)*2.54} ${p.rot}) (size 0.2 0.2) (layers B.Cu B.Mask) ${p.local_net(i).str}`
-          solder_pads += male_pad
-
-          //Right Back male
-          solder_pads += `\t\t(pad 1 smd custom (at 5.62 ${7.62 - (i)*2.54} ${180 + p.rot}) (size 0.2 0.2) (layers B.Cu B.Mask) ${p.local_net(i + 7).str}`
-          solder_pads += male_pad
-          
-          //Left Front female
-          solder_pads += `\t\t(pad 1 smd custom (at 4.775 ${-7.62 + (i)*2.54} ${180 + p.rot}) (size 0.2 0.2) (layers B.Cu B.Mask) ${pin_nets[i][1]}`
-          solder_pads += female_pad
-          
-          //Right Front female
-          solder_pads += `\t\t(pad 1 smd custom (at -4.775 ${7.62 - (i)*2.54} ${p.rot}) (size 0.2 0.2) (layers B.Cu B.Mask) ${pin_nets[6 - i][0]}`
-          solder_pads += female_pad
-          
-          //Right VIAS
-          solder_pads += `\t\t(pad 1 thru_hole circle (at 3.262 ${7.62 - (i)*2.54}) (size 0.8 0.8) (drill 0.4) (layers *.Cu *.Mask) ${pin_nets[6 - i][1]})\n`
         }
         return solder_pads
       }
 
+      /* I stole this code from infused-kim's guide at https://nilnil.notion.site/Convert-Kicad-Footprints-to-Ergogen-8340ce87ad554c69af4e3f92bc9a0898
+      I have no idea how it works. I am pretty sure that it interfaces with the other ergogen code in a way that I don't understand.*/
       const get_at_coordinates = () => {
         const pattern = /\(at (-?[\d\.]*) (-?[\d\.]*) (-?[\d\.]*)\)/;
         const matches = p.at.match(pattern);
@@ -141,6 +154,7 @@ module.exports = {
         const point_str = `${nx.toFixed(2)} ${ny.toFixed(2)}`;
         return point_str;
     }
+    /*End of swiped code*/
 
       const get_traces = () => {
         let traces = ``// ${adjust_point()}
@@ -148,24 +162,24 @@ module.exports = {
         traces += `\t(segment (start ${adjust_point(-5.62, -7.62)}) (end ${adjust_point(-7.62, -7.62)}) (width 0.25) (layer "F.Cu") (net 1))`
         traces += `\t(segment (start ${adjust_point(-5.62, -7.62)}) (end ${adjust_point(-7.62, -7.62)}) (width 0.25) (layer "B.Cu") (net 1))`
         /* Right pin to Right male pad F and B*/
-        traces += `\t(segment (start 5.62 -7.62) (end 7.62 -7.62) (width 0.25) (layer "F.Cu") (net 1))`
-        traces += `\t(segment (start 5.62 -7.62) (end 7.62 -7.62) (width 0.25) (layer "B.Cu") (net 1))`
+        traces += `\t(segment (start ${adjust_point(5.62, -7.62)}) (end ${adjust_point(7.62, -7.62)}) (width 0.25) (layer "F.Cu") (net 1))`
+        traces += `\t(segment (start ${adjust_point(5.62, -7.62)}) (end ${adjust_point(7.62, -7.62)}) (width 0.25) (layer "B.Cu") (net 1))`
 
         /*Left female pad to right via F*/
-        traces += `\t(segment (start -4.775 -7.62) (end -4.05 -8.345) (width 0.25) (layer "F.Cu") (net 1))`
-        traces += `\t(segment (start -4.05 -8.345) (end 2.537 -8.345) (width 0.25) (layer "F.Cu") (net 1))`
-        traces += `\t(segment (start 2.537 -8.345) (end 3.262 -7.62)  (width 0.25) (layer "F.Cu") (net 1))`
+        traces += `\t(segment (start ${adjust_point(-4.775, -7.62)}) (end ${adjust_point(-4.05, -8.345)}) (width 0.25) (layer "F.Cu") (net 1))`
+        traces += `\t(segment (start ${adjust_point(-4.05, -8.345)}) (end ${adjust_point(2.537, -8.345)}) (width 0.25) (layer "F.Cu") (net 1))`
+        traces += `\t(segment (start ${adjust_point(2.537, -8.345)}) (end ${adjust_point(3.262, -7.62)})  (width 0.25) (layer "F.Cu") (net 1))`
         
         /*Right female pad to left via F*/
-        traces += `\t(segment (start 4.775 -7.62)   (end 4.05 -6.895)   (width 0.25) (layer "F.Cu") (net 1))`
-        traces += `\t(segment (start 4.05 -6.895)   (end -2.537 -6.895) (width 0.25) (layer "F.Cu") (net 1))`
-        traces += `\t(segment (start -2.537 -6.895) (end -3.262 -7.62)  (width 0.25) (layer "F.Cu") (net 1))`
+        traces += `\t(segment (start ${adjust_point(4.775, -7.62)})   (end ${adjust_point(4.05, -6.895)})   (width 0.25) (layer "F.Cu") (net 1))`
+        traces += `\t(segment (start ${adjust_point(4.05, -6.895)})   (end ${adjust_point(-2.537, -6.895)}) (width 0.25) (layer "F.Cu") (net 1))`
+        traces += `\t(segment (start ${adjust_point(-2.537, -6.895)}) (end ${adjust_point(-3.262, -7.62)})  (width 0.25) (layer "F.Cu") (net 1))`
 
         /*Left female pad to left via B*/
-        traces += `\t(segment (start -4.775 -7.62) (end -3.262 -7.62) (width 0.25) (layer "B.Cu") (net 1))`
+        traces += `\t(segment (start ${adjust_point(-4.775, -7.62)}) (end ${adjust_point(-3.262, -7.62)}) (width 0.25) (layer "B.Cu") (net 1))`
 
         /*Right female pad to right via B*/
-        traces += `\t(segment (start 4.775 -7.62) (end 3.262 -7.62) (width 0.25) (layer "B.Cu") (net 1))`
+        traces += `\t(segment (start ${adjust_point(4.775, -7.62)}) (end ${adjust_point(3.262, -7.62)}) (width 0.25) (layer "B.Cu") (net 1))`
 
         return traces
       }
@@ -247,6 +261,7 @@ ${get_thru_hole()}
           (effects (font (size 1 1) (thickness 0.15)))
       )
       `
+
       const reversable_lable_txt = `
       ${'' /*Lettering on the silkscreen*/}
       (fp_text user "XIAO" (at 0 0.5 ${p.rot}) (layer "B.SilkS")
