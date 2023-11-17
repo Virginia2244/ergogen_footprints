@@ -159,30 +159,31 @@ module.exports = {
     /*End of swiped code*/
 
       const get_traces = () => {
-        let traces = ``// ${adjust_point()}
-        /* Left pin to Right male pad F and B*/
-        traces += `\t(segment (start ${adjust_point(-5.62, -7.62)}) (end ${adjust_point(-7.62, -7.62)}) (width 0.25) (layer "F.Cu") (net 1))`
-        traces += `\t(segment (start ${adjust_point(-5.62, -7.62)}) (end ${adjust_point(-7.62, -7.62)}) (width 0.25) (layer "B.Cu") (net 1))`
-        /* Right pin to Right male pad F and B*/
-        traces += `\t(segment (start ${adjust_point(5.62, -7.62)}) (end ${adjust_point(7.62, -7.62)}) (width 0.25) (layer "F.Cu") (net 1))`
-        traces += `\t(segment (start ${adjust_point(5.62, -7.62)}) (end ${adjust_point(7.62, -7.62)}) (width 0.25) (layer "B.Cu") (net 1))`
+        let traces = ``
+        for (let i = 0; i < (spacing.half_pin_num); i++) {
+          /* Left pin to Right male pad F and B*/
+          traces += `\t(segment (start ${adjust_point(spacing.top_left_pin.x + spacing.pin_to_male_pad, spacing.top_left_pin.y + i*spacing.pin_dist)}) (end ${adjust_point(spacing.top_left_pin.x, spacing.top_left_pin.y + i*spacing.pin_dist)}) (width 0.25) (layer "F.Cu") (net 1))`
+          traces += `\t(segment (start ${adjust_point(spacing.top_left_pin.x + spacing.pin_to_male_pad, spacing.top_left_pin.y + i*spacing.pin_dist)}) (end ${adjust_point(spacing.top_left_pin.x, spacing.top_left_pin.y + i*spacing.pin_dist)}) (width 0.25) (layer "B.Cu") (net 1))`
+          /* Right pin to Right male pad F and B*/
+          traces += `\t(segment (start ${adjust_point(spacing.top_right_pin.x - spacing.pin_to_male_pad, spacing.top_right_pin.y + i*spacing.pin_dist)}) (end ${adjust_point(spacing.top_right_pin.x, spacing.top_right_pin.y + i*spacing.pin_dist)}) (width 0.25) (layer "F.Cu") (net 1))`
+          traces += `\t(segment (start ${adjust_point(spacing.top_right_pin.x - spacing.pin_to_male_pad, spacing.top_right_pin.y + i*spacing.pin_dist)}) (end ${adjust_point(spacing.top_right_pin.x, spacing.top_right_pin.y + i*spacing.pin_dist)}) (width 0.25) (layer "B.Cu") (net 1))`
 
-        /*Left female pad to right via F*/
-        traces += `\t(segment (start ${adjust_point(-4.775, -7.62)}) (end ${adjust_point(-4.05, -8.345)}) (width 0.25) (layer "F.Cu") (net 1))`
-        traces += `\t(segment (start ${adjust_point(-4.05, -8.345)}) (end ${adjust_point(2.537, -8.345)}) (width 0.25) (layer "F.Cu") (net 1))`
-        traces += `\t(segment (start ${adjust_point(2.537, -8.345)}) (end ${adjust_point(3.262, -7.62)})  (width 0.25) (layer "F.Cu") (net 1))`
-        
-        /*Right female pad to left via F*/
-        traces += `\t(segment (start ${adjust_point(4.775, -7.62)})   (end ${adjust_point(4.05, -6.895)})   (width 0.25) (layer "F.Cu") (net 1))`
-        traces += `\t(segment (start ${adjust_point(4.05, -6.895)})   (end ${adjust_point(-2.537, -6.895)}) (width 0.25) (layer "F.Cu") (net 1))`
-        traces += `\t(segment (start ${adjust_point(-2.537, -6.895)}) (end ${adjust_point(-3.262, -7.62)})  (width 0.25) (layer "F.Cu") (net 1))`
+          /*Left female pad to right via F*/
+          traces += `\t(segment (start ${adjust_point(spacing.top_left_pin.x + spacing.pin_to_female_pad, spacing.top_left_pin.y + i*spacing.pin_dist)}) (end ${adjust_point(spacing.top_left_pin.x + 3.57, spacing.top_left_pin.y - .725 + i*spacing.pin_dist)}) (width 0.25) (layer "F.Cu") (net 1))`
+          traces += `\t(segment (start ${adjust_point(spacing.top_left_pin.x + 3.57, spacing.top_left_pin.y - .725 + i*spacing.pin_dist)}) (end ${adjust_point(spacing.top_right_pin.x - 5.088, spacing.top_right_pin.y - .725 + i*spacing.pin_dist)}) (width 0.25) (layer "F.Cu") (net 1))`
+          traces += `\t(segment (start ${adjust_point(spacing.top_right_pin.x - 5.088, spacing.top_right_pin.y - .725 + i*spacing.pin_dist)}) (end ${adjust_point(spacing.top_right_pin.x - spacing.pin_to_via, spacing.top_right_pin.y + i*spacing.pin_dist)})  (width 0.25) (layer "F.Cu") (net 1))`
+          
+          /*Right female pad to left via F*/
+          traces += `\t(segment (start ${adjust_point(spacing.top_right_pin.x - spacing.pin_to_female_pad, spacing.top_right_pin.y + i*spacing.pin_dist)})   (end ${adjust_point(spacing.top_right_pin.x - 3.57, spacing.top_right_pin.y + .725 + i*spacing.pin_dist)})   (width 0.25) (layer "F.Cu") (net 1))`
+          traces += `\t(segment (start ${adjust_point(spacing.top_right_pin.x - 3.57, spacing.top_right_pin.y + .725 + i*spacing.pin_dist)})   (end ${adjust_point(spacing.top_left_pin.x + 5.088, spacing.top_left_pin.y + .725 + i*spacing.pin_dist)}) (width 0.25) (layer "F.Cu") (net 1))`
+          traces += `\t(segment (start ${adjust_point(spacing.top_left_pin.x + 5.088, spacing.top_left_pin.y + .725 + i*spacing.pin_dist)}) (end ${adjust_point(spacing.top_left_pin.x + spacing.pin_to_via, spacing.top_left_pin.y + i*spacing.pin_dist)})  (width 0.25) (layer "F.Cu") (net 1))`
 
-        /*Left female pad to left via B*/
-        traces += `\t(segment (start ${adjust_point(-4.775, -7.62)}) (end ${adjust_point(-3.262, -7.62)}) (width 0.25) (layer "B.Cu") (net 1))`
+          /*Left female pad to left via B*/
+          traces += `\t(segment (start ${adjust_point(spacing.top_left_pin.x + spacing.pin_to_female_pad, spacing.top_left_pin.y + i*spacing.pin_dist)}) (end ${adjust_point(spacing.top_left_pin.x + spacing.pin_to_via, spacing.top_left_pin.y + i*spacing.pin_dist)}) (width 0.25) (layer "B.Cu") (net 1))`
 
-        /*Right female pad to right via B*/
-        traces += `\t(segment (start ${adjust_point(4.775, -7.62)}) (end ${adjust_point(3.262, -7.62)}) (width 0.25) (layer "B.Cu") (net 1))`
-
+          /*Right female pad to right via B*/
+          traces += `\t(segment (start ${adjust_point(spacing.top_right_pin.x - spacing.pin_to_female_pad, spacing.top_right_pin.y + i*spacing.pin_dist)}) (end ${adjust_point(spacing.top_right_pin.x - spacing.pin_to_via, spacing.top_right_pin.y + i*spacing.pin_dist)}) (width 0.25) (layer "B.Cu") (net 1))`
+        }
         return traces
       }
 
@@ -250,8 +251,8 @@ ${get_thru_hole()}
     ${get_thru_hole()}
 
     ${'' /*Getting the solder pads*/}
-     ${get_solder_pads()}      
-     `
+    ${get_solder_pads()}      
+    `
 
       const lable_txt = `
       ${'' /*Lettering on the silkscreen*/}
