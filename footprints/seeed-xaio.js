@@ -109,16 +109,65 @@ module.exports = {
         return solder_pads
       }
 
-      const get_traces = () => {
-        let temp = ''
-        // /* Left pin to male pad */
-        // temp += `(segment (start -5.62 -7.62) (end -7.62 -7.62) (width 0.25) (layer "F.Cu") (net 15))`
-        // temp += `(segment (start -5.62 -7.62) (end -7.62 -7.62) (width 0.25) (layer "B.Cu") (net 15))`
-        // /* Right pin to male pad */
-        // temp += `(segment (start 5.62 -7.62) (end 7.62 -7.62) (width 0.25) (layer "F.Cu") (net 28))`
-        // temp += `(segment (start 5.62 -7.62) (end 7.62 -7.62) (width 0.25) (layer "B.Cu") (net 28))`
+      const get_at_coordinates = () => {
+        const pattern = /\(at (-?[\d\.]*) (-?[\d\.]*) (-?[\d\.]*)\)/;
+        const matches = p.at.match(pattern);
+        if (matches && matches.length == 4) {
+            return [parseFloat(matches[1]), parseFloat(matches[2]), parseFloat(matches[3])];
+        } else {
+            return null;
+        }
+      }
 
-        return temp
+    const adjust_point = (x, y) => {
+        const at_l = get_at_coordinates();
+        if(at_l == null) {
+            throw new Error(
+            `Could not get x and y coordinates from p.at: ${p.at}`
+            );
+        }
+        const at_x = at_l[0];
+        const at_y = at_l[1];
+        const at_angle = at_l[2];
+        const adj_x = at_x + x;
+        const adj_y = at_y + y;
+
+        const radians = (Math.PI / 180) * at_angle,
+            cos = Math.cos(radians),
+            sin = Math.sin(radians),
+            nx = (cos * (adj_x - at_x)) + (sin * (adj_y - at_y)) + at_x,
+            ny = (cos * (adj_y - at_y)) - (sin * (adj_x - at_x)) + at_y;
+
+        const point_str = `${nx.toFixed(2)} ${ny.toFixed(2)}`;
+        return point_str;
+    }
+
+      const get_traces = () => {
+        let traces = ``// ${adjust_point()}
+        /* Left pin to Right male pad F and B*/
+        traces += `\t(segment (start ${adjust_point(-5.62, -7.62)}) (end ${adjust_point(-7.62, -7.62)}) (width 0.25) (layer "F.Cu") (net 1))`
+        traces += `\t(segment (start ${adjust_point(-5.62, -7.62)}) (end ${adjust_point(-7.62, -7.62)}) (width 0.25) (layer "B.Cu") (net 1))`
+        /* Right pin to Right male pad F and B*/
+        traces += `\t(segment (start 5.62 -7.62) (end 7.62 -7.62) (width 0.25) (layer "F.Cu") (net 1))`
+        traces += `\t(segment (start 5.62 -7.62) (end 7.62 -7.62) (width 0.25) (layer "B.Cu") (net 1))`
+
+        /*Left female pad to right via F*/
+        traces += `\t(segment (start -4.775 -7.62) (end -4.05 -8.345) (width 0.25) (layer "F.Cu") (net 1))`
+        traces += `\t(segment (start -4.05 -8.345) (end 2.537 -8.345) (width 0.25) (layer "F.Cu") (net 1))`
+        traces += `\t(segment (start 2.537 -8.345) (end 3.262 -7.62)  (width 0.25) (layer "F.Cu") (net 1))`
+        
+        /*Right female pad to left via F*/
+        traces += `\t(segment (start 4.775 -7.62)   (end 4.05 -6.895)   (width 0.25) (layer "F.Cu") (net 1))`
+        traces += `\t(segment (start 4.05 -6.895)   (end -2.537 -6.895) (width 0.25) (layer "F.Cu") (net 1))`
+        traces += `\t(segment (start -2.537 -6.895) (end -3.262 -7.62)  (width 0.25) (layer "F.Cu") (net 1))`
+
+        /*Left female pad to left via B*/
+        traces += `\t(segment (start -4.775 -7.62) (end -3.262 -7.62) (width 0.25) (layer "B.Cu") (net 1))`
+
+        /*Right female pad to right via B*/
+        traces += `\t(segment (start 4.775 -7.62) (end 3.262 -7.62) (width 0.25) (layer "B.Cu") (net 1))`
+
+        return traces
       }
 
       const standard = `
