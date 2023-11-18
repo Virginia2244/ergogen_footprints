@@ -4,6 +4,8 @@ module.exports = {
       label: {type: 'boolean', value: true},
       instructions: {type: 'boolean', value: true},
       traces: {type: 'boolean', value: true},
+      view: {type: 'boolean', value: true},
+      
       P006: {type: 'net', value: 'P006'},
       P008: {type: 'net', value: 'P008'},
       P017: {type: 'net', value: 'P017'},
@@ -293,7 +295,14 @@ module.exports = {
             (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
           )
       `
+      const view_solder_pads = `
+      (pad 26 thru_hole oval (at -5.08  10.16  ${p.rot}) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${p.P101.str})
+      (pad 27 thru_hole oval (at -2.54  10.16  ${p.rot}) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${p.P102.str})
+      (pad 28 thru_hole oval (at  0     10.16  ${p.rot}) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${p.P107.str})
       
+      `
+
+
       /* Code for hte reversable footprints */
       const standard = `
       (module nice_nano ${p.at /* parametric position */} (layer F.Cu) (tedit 64CF2E17)
@@ -322,9 +331,8 @@ module.exports = {
 ${'' /*Getting the through holes*/}
 ${get_thru_hole()}
 
-(pad 26 thru_hole oval (at -5.08  10.16  ${p.rot}) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${p.P101.str})
-(pad 27 thru_hole oval (at -2.54  10.16  ${p.rot}) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${p.P102.str})
-(pad 28 thru_hole oval (at  0     10.16  ${p.rot}) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${p.P107.str})
+${''}
+${view ? view_solder_pads : ''}
 
 `
 
