@@ -4,8 +4,8 @@ module.exports = {
       label: {type: 'boolean', value: true},
       instructions: {type: 'boolean', value: true},
       traces: {type: 'boolean', value: true},
-      P0: {type: 'net', value: 'P0'},
       P1: {type: 'net', value: 'P1'},
+      P0: {type: 'net', value: 'P0'},
       P2: {type: 'net', value: 'P2'},
       P3: {type: 'net', value: 'P3'},
       P4: {type: 'net', value: 'P4'},
@@ -14,21 +14,35 @@ module.exports = {
       P7: {type: 'net', value: 'P7'},
       P8: {type: 'net', value: 'P8'},
       P9: {type: 'net', value: 'P9'},
+      P21: {type: 'net', value: 'P21'},
+      P20: {type: 'net', value: 'P20'},
+      P19: {type: 'net', value: 'P19'},
+      P18: {type: 'net', value: 'P18'},
+      P15: {type: 'net', value: 'P15'},
+      P14: {type: 'net', value: 'P14'},
+      P16: {type: 'net', value: 'P16'},
       P10: {type: 'net', value: 'P10'},
       VCC: {type: 'net', value: 'VCC'},
-      GND: {type: 'net', value: 'GND'},
       V3: {type: 'net', value: 'V3'},
+      GND: {type: 'net', value: 'GND'},
+      RST: {type: 'net', value: 'RST'},
     },
     body: p => {
       /* Putting the nets into an array so that it can be itterated through */
       const pin_nets = [
-        [`${p.P0.str}`, `${p.VCC.str}`],
-        [`${p.P1.str}`, `${p.GND.str}`],
-        [`${p.P2.str}`, `${p.V3.str}`],
-        [`${p.P3.str}`, `${p.P10.str}`],
-        [`${p.P4.str}`, `${p.P9.str}`],
-        [`${p.P5.str}`, `${p.P8.str}`],
-        [`${p.P6.str}`, `${p.P7.str}`],
+        [`${p.GND.str}`, `${p.VCC.str}`],
+        [`${p.P1.str}`, `${p.VCC.str}`],
+        [`${p.P0.str}`, `${p.GND.str}`],
+        [`${p.GND.str}`, `${p.RST.str}`],
+        [`${p.GND.str}`, `${p.V3.str}`],
+        [`${p.P2.str}`, `${p.P21.str}`],
+        [`${p.P3.str}`, `${p.P20.str}`],
+        [`${p.P4.str}`, `${p.P19.str}`],
+        [`${p.P5.str}`, `${p.P18.str}`],
+        [`${p.P6.str}`, `${p.P15.str}`],
+        [`${p.P7.str}`, `${p.P14.str}`],
+        [`${p.P8.str}`, `${p.P16.str}`],
+        [`${p.P9.str}`, `${p.P10.str}`],
       ]
 
       /*These constants are the magic of this code, they allow us to adjust almost everything important aspect of the microcontroller.
@@ -44,11 +58,11 @@ module.exports = {
       pin_to_via: the distance from the pin on the microcontroller to the via.
       */
       const spacing = {
-        top_left_pin:  {x: -7.62, y: -7.62},
-        top_right_pin: {x: 7.62, y: -7.62}, 
+        top_left_pin:  {x: -7.62, y: -15.24},
+        top_right_pin: {x: 7.62, y: -15.24}, 
         pin_dist: 2.54,
-        total_pin_num: 14,
-        half_pin_num: 7,
+        total_pin_num: 26,
+        half_pin_num: 13,
         pin_to_male_pad: 2,
         pin_to_female_pad: 2.845,
         pin_to_via: 4.358,
@@ -80,8 +94,8 @@ module.exports = {
         /* Starts at the top two microcontrollers and goes down. 
         It makes the nets internal if it reversable and straight to the pin_nets if not.*/
         for (let i = 0; i < spacing.half_pin_num; i++) {
-          thru_hole += `(pad ${i}                             thru_hole oval (at ${spacing.top_left_pin.x}  ${spacing.top_left_pin.y + (i)*spacing.pin_dist}  ${p.rot})       (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask) ${p.reversable ? p.local_net(i).str : pin_nets[i][0]})\n`
-          thru_hole += `(pad ${spacing.total_pin_num - 1 - i} thru_hole oval (at ${spacing.top_right_pin.x} ${spacing.top_right_pin.y + (i)*spacing.pin_dist} ${180 + p.rot}) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask) ${p.reversable ? p.local_net(spacing.total_pin_num - 1 - i).str : pin_nets[i][1]})\n`
+          thru_hole += `(pad ${i}                             thru_hole oval (at ${spacing.top_left_pin.x}  ${spacing.top_left_pin.y + (i)*spacing.pin_dist}  ${p.rot})       (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${p.reversable ? p.local_net(i).str : pin_nets[i][0]})\n`
+          thru_hole += `(pad ${spacing.total_pin_num - 1 - i} thru_hole oval (at ${spacing.top_right_pin.x} ${spacing.top_right_pin.y + (i)*spacing.pin_dist} ${180 + p.rot}) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${p.reversable ? p.local_net(spacing.total_pin_num - 1 - i).str : pin_nets[i][1]})\n`
         }
         return thru_hole
       }
@@ -245,58 +259,53 @@ module.exports = {
       /* Adding lables on the front side of the pcb */
       const lable_txt = `
       ${'' /*Lettering on the silkscreen*/}
-      (fp_text user "XIAO" (at 0 0.5 ${p.rot}) (layer "F.SilkS")
-      (effects (font (size 1 1) (thickness 0.15)))
-      )
-
-      (fp_text user "Seeed" (at 0 -1.5 ${p.rot}) (layer "F.SilkS")
-          (effects (font (size 1 1) (thickness 0.15)))
+      (fp_text user "nice_nano" (at 0 -20 ${p.rot}) (layer F.SilkS)
+        (effects (font (size 1 1) (thickness 0.15)))
       )
       `
 
       /* Adds lables on the back side of the pcb */
       const reversable_lable_txt = `
       ${'' /*Lettering on the silkscreen*/}
-      (fp_text user "XIAO" (at 0 0.5 ${p.rot}) (layer "B.SilkS")
-      (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-      ) 
-
-      (fp_text user "Seeed" (at 0 -1.5 ${p.rot}) (layer "B.SilkS")
-          (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
+      (fp_text user "nice_nano" (at 0 -20 ${p.rot}) (layer B.SilkS)
+        (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       )
       `
 
       /* Instructions about which side the solder should be on. */
       const instructions = `
-          (fp_text user "R. Side - Jumper Here" (at 0 11.5 ${p.rot}) (layer F.SilkS)
+          (fp_text user "R. Side - Jumper Here" (at 0 18 ${p.rot}) (layer F.SilkS)
             (effects (font (size 1 1) (thickness 0.15)))
           )
-          (fp_text user "L. Side - Jumper Here" (at 0 11.5 ${p.rot}) (layer B.SilkS)
+          (fp_text user "L. Side - Jumper Here" (at 0 18 ${p.rot}) (layer B.SilkS)
             (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
           )
       `
       
       /* Code for hte reversable footprints */
       const standard = `
-${'' /* Add the kicad_mod content here*/}
-(footprint "xiao-ble-tht" (version 20211014) (generator pcbnew)
-  ${p.at /* parametric position */}
-  (layer "F.Cu")
-  (tedit 62108D0B)
-  (attr smd exclude_from_pos_files)
+      (module nice_nano ${p.at /* parametric position */} (layer F.Cu) (tedit 64CF2E17)
 
-  ${'' /*Box outlining the front usb-c port*/}
-  (fp_rect (start 4.5 -4.5) (end -4.5 -11.92403) (layer "F.SilkS") (width 0.127) (fill none))
-
-  ${'' /*Box outlining the front body*/}
-  (fp_line (start 8.9 8.5) (end 8.9 -8.5) (layer "F.SilkS") (width 0.127))
-  (fp_line (start -8.9 -8.5) (end -8.9 8.5) (layer "F.SilkS") (width 0.127))
-  (fp_line (start 6.9 -10.5) (end -6.9 -10.5) (layer "F.SilkS") (width 0.127))
-  (fp_line (start -6.9 10.5) (end 6.9 10.5) (layer "F.SilkS") (width 0.127))
-  (fp_arc (start 8.9 8.5) (mid 8.314214 9.914214) (end 6.9 10.5) (layer "F.SilkS") (width 0.127))
-  (fp_arc (start 6.9 -10.5) (mid 8.301491 -9.901491) (end 8.9 -8.5) (layer "F.SilkS") (width 0.127))
-  (fp_arc (start -6.9 10.5) (mid -8.301423 9.901423) (end -8.9 8.5) (layer "F.SilkS") (width 0.127))
-  (fp_arc (start -8.9 -8.5) (mid -8.301491 -9.901491) (end -6.9 -10.5) (layer "F.SilkS") (width 0.127))
+      
+      (fp_line (start 6.29 -11.43) (end 8.95 -11.43) (layer F.SilkS) (width 0.12))
+      (fp_line (start 6.29 -14.03) (end 8.95 -14.03) (layer F.SilkS) (width 0.12))
+      (fp_line (start 6.29 -14.03) (end 6.29 16.57) (layer F.SilkS) (width 0.12))
+      (fp_line (start 6.29 16.57) (end 8.95 16.57) (layer F.SilkS) (width 0.12))
+      (fp_line (start 8.95 -14.03) (end 8.95 16.57) (layer F.SilkS) (width 0.12))
+      (fp_line (start 3.556 -18.034) (end 3.556 -16.51) (layer Dwgs.User) (width 0.15))
+      (fp_line (start 8.89 16.51) (end 8.89 -14.03) (layer F.CrtYd) (width 0.15))
+      (fp_line (start 8.89 -14.03) (end -8.89 -14.03) (layer F.CrtYd) (width 0.15))
+      (fp_line (start -8.89 -14.03) (end -8.89 16.51) (layer F.CrtYd) (width 0.15))
+      (fp_line (start -8.89 16.51) (end 8.89 16.51) (layer F.CrtYd) (width 0.15))
+      (fp_line (start -3.81 -16.51) (end -3.81 -18.034) (layer Dwgs.User) (width 0.15))
+      (fp_line (start -3.81 -18.034) (end 3.556 -18.034) (layer Dwgs.User) (width 0.15))
+      (fp_line (start -8.95 -14.03) (end -6.29 -14.03) (layer F.SilkS) (width 0.12))
+      (fp_line (start -8.95 -14.03) (end -8.95 16.57) (layer F.SilkS) (width 0.12))
+      (fp_line (start -8.95 16.57) (end -6.29 16.57) (layer F.SilkS) (width 0.12))
+      (fp_line (start -6.29 -14.03) (end -6.29 16.57) (layer F.SilkS) (width 0.12))
+      (fp_line (start -8.89 -16.51) (end 8.89 -16.51) (layer F.Fab) (width 0.12))
+      (fp_line (start -8.89 -16.51) (end -8.89 -14) (layer F.Fab) (width 0.12))
+      (fp_line (start 8.89 -16.51) (end 8.89 -14) (layer F.Fab) (width 0.12))
 
 ${'' /*Getting the through holes*/}
 ${get_thru_hole()}
@@ -305,38 +314,44 @@ ${get_thru_hole()}
 
       /* The code for the reversable footprint */
       const reversable_txt = `
-(
-  footprint "xiao-ble-tht" (version 20211014) (generator pcbnew)
-    ${p.at /* parametric position */}
-    (layer "F.Cu")
-    (tedit 62108D0B)
-    (attr smd exclude_from_pos_files)
-
-    ${'' /*Box outlining the front usb-c port*/}
-    (fp_rect (start 4.5 -4.5) (end -4.5 -11.92403) (layer "F.SilkS") (width 0.127) (fill none))
-
-    ${'' /*Box outlining the front body*/}
-    (fp_line (start 8.9 8.5) (end 8.9 -8.5) (layer "F.SilkS") (width 0.127))
-    (fp_line (start -8.9 -8.5) (end -8.9 8.5) (layer "F.SilkS") (width 0.127))
-    (fp_line (start 6.9 -10.5) (end -6.9 -10.5) (layer "F.SilkS") (width 0.127))
-    (fp_line (start -6.9 10.5) (end 6.9 10.5) (layer "F.SilkS") (width 0.127))
-    (fp_arc (start 8.9 8.5) (mid 8.314214 9.914214) (end 6.9 10.5) (layer "F.SilkS") (width 0.127))
-    (fp_arc (start 6.9 -10.5) (mid 8.301491 -9.901491) (end 8.9 -8.5) (layer "F.SilkS") (width 0.127))
-    (fp_arc (start -6.9 10.5) (mid -8.301423 9.901423) (end -8.9 8.5) (layer "F.SilkS") (width 0.127))
-    (fp_arc (start -8.9 -8.5) (mid -8.301491 -9.901491) (end -6.9 -10.5) (layer "F.SilkS") (width 0.127))
-
-    ${'' /*Box outlining the back usb-c port*/}
-    (fp_rect (start 4.5 -4.5) (end -4.5 -11.92403) (layer "B.SilkS") (width 0.127) (fill none))
-
-    ${'' /*Box outlining the back body*/}
-    (fp_line (start 8.9 8.5) (end 8.9 -8.5) (layer "B.SilkS") (width 0.127))
-    (fp_line (start -8.9 -8.5) (end -8.9 8.5) (layer "B.SilkS") (width 0.127))
-    (fp_line (start 6.9 -10.5) (end -6.9 -10.5) (layer "B.SilkS") (width 0.127))
-    (fp_line (start -6.9 10.5) (end 6.9 10.5) (layer "B.SilkS") (width 0.127))
-    (fp_arc (start 8.9 8.5) (mid 8.314214 9.914214) (end 6.9 10.5) (layer "B.SilkS") (width 0.127))
-    (fp_arc (start 6.9 -10.5) (mid 8.301491 -9.901491) (end 8.9 -8.5) (layer "B.SilkS") (width 0.127))
-    (fp_arc (start -6.9 10.5) (mid -8.301423 9.901423) (end -8.9 8.5) (layer "B.SilkS") (width 0.127))
-    (fp_arc (start -8.9 -8.5) (mid -8.301491 -9.901491) (end -6.9 -10.5) (layer "B.SilkS") (width 0.127))
+      (module nice_nano ${p.at /* parametric position */} (layer F.Cu) (tedit 64CF2E17)
+            
+      
+      (fp_line (start 6.29 -11.43) (end 8.95 -11.43) (layer F.SilkS) (width 0.12))
+      (fp_line (start -8.95 -11.43) (end -6.29 -11.43) (layer B.SilkS) (width 0.12))
+      (fp_line (start 6.29 -14.03) (end 8.95 -14.03) (layer F.SilkS) (width 0.12))
+      (fp_line (start 6.29 -14.03) (end 6.29 16.57) (layer F.SilkS) (width 0.12))
+      (fp_line (start 6.29 16.57) (end 8.95 16.57) (layer F.SilkS) (width 0.12))
+      (fp_line (start 8.95 -14.03) (end 8.95 16.57) (layer F.SilkS) (width 0.12))
+      (fp_line (start 3.556 -18.034) (end 3.556 -16.51) (layer Dwgs.User) (width 0.15))
+      (fp_line (start 8.89 16.51) (end 8.89 -14.03) (layer F.CrtYd) (width 0.15))
+      (fp_line (start 8.89 -14.03) (end -8.89 -14.03) (layer F.CrtYd) (width 0.15))
+      (fp_line (start -8.89 -14.03) (end -8.89 16.51) (layer F.CrtYd) (width 0.15))
+      (fp_line (start -8.89 16.51) (end 8.89 16.51) (layer F.CrtYd) (width 0.15))
+      (fp_line (start -3.81 -16.51) (end -3.81 -18.034) (layer Dwgs.User) (width 0.15))
+      (fp_line (start -3.81 -18.034) (end 3.556 -18.034) (layer Dwgs.User) (width 0.15))
+      (fp_line (start -8.95 -14.03) (end -6.29 -14.03) (layer F.SilkS) (width 0.12))
+      (fp_line (start -8.95 -14.03) (end -8.95 16.57) (layer F.SilkS) (width 0.12))
+      (fp_line (start -8.95 16.57) (end -6.29 16.57) (layer F.SilkS) (width 0.12))
+      (fp_line (start -6.29 -14.03) (end -6.29 16.57) (layer F.SilkS) (width 0.12))
+      (fp_line (start -6.29 -14.03) (end -8.95 -14.03) (layer B.SilkS) (width 0.12))
+      (fp_line (start -6.29 -14.03) (end -6.29 16.57) (layer B.SilkS) (width 0.12))
+      (fp_line (start -6.29 16.57) (end -8.95 16.57) (layer B.SilkS) (width 0.12))
+      (fp_line (start -8.95 -14.03) (end -8.95 16.57) (layer B.SilkS) (width 0.12))
+      (fp_line (start -8.89 16.51) (end -8.89 -14.03) (layer B.CrtYd) (width 0.15))
+      (fp_line (start -8.89 -14.03) (end 8.89 -14.03) (layer B.CrtYd) (width 0.15))
+      (fp_line (start 8.89 -14.03) (end 8.89 16.51) (layer B.CrtYd) (width 0.15))
+      (fp_line (start 8.89 16.51) (end -8.89 16.51) (layer B.CrtYd) (width 0.15))
+      (fp_line (start 8.95 -14.03) (end 6.29 -14.03) (layer B.SilkS) (width 0.12))
+      (fp_line (start 8.95 -14.03) (end 8.95 16.57) (layer B.SilkS) (width 0.12))
+      (fp_line (start 8.95 16.57) (end 6.29 16.57) (layer B.SilkS) (width 0.12))
+      (fp_line (start 6.29 -14.03) (end 6.29 16.57) (layer B.SilkS) (width 0.12))
+      (fp_line (start -8.89 -16.51) (end 8.89 -16.51) (layer F.Fab) (width 0.12))
+      (fp_line (start -8.89 -16.51) (end -8.89 -14) (layer F.Fab) (width 0.12))
+      (fp_line (start 8.89 -16.51) (end 8.89 -14) (layer F.Fab) (width 0.12))
+      (fp_line (start -8.89 -16.5) (end -8.89 -13.99) (layer B.Fab) (width 0.12))
+      (fp_line (start 8.89 -16.51) (end 8.89 -14) (layer B.Fab) (width 0.12))
+      (fp_line (start -8.89 -16.51) (end 8.89 -16.51) (layer B.Fab) (width 0.12))
 
     ${'' /*Getting the through holes*/}
     ${get_thru_hole()}
@@ -346,12 +361,15 @@ ${get_thru_hole()}
 
     ${'' /* Getting the lables */}
     ${p.label ? reversable_lable_txt : ''}
+
+    ${'' /* Getting the instructions */}
+    ${p.instructions ? instructions : ''}
+
       `
 
       return `
         ${p.reversable ? reversable_txt : standard}
         ${p.label ? lable_txt : ''}
-        ${p.instructions ? instructions : ''}
 				)
         ${p.traces ? (p.reversable ? get_traces() : '') : ''}
       `
