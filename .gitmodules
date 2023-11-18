@@ -4,3 +4,6 @@
 [submodule "Kicad_footprints/kleeb"]
 	path = Kicad_footprints/kleeb
 	url = git@github.com:crides/kleeb.git
+[submodule "Kicad_footprints/promicro"]
+	path = Kicad_footprints/promicro
+	url = git@github.com:Biacco42/ProMicroKiCad.git
