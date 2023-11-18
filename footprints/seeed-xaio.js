@@ -280,10 +280,10 @@ ${get_thru_hole()}
       )
       `
       const instructions = `
-          (fp_text user "R. Side - Jumper Here" (at 0 11.5) (layer F.SilkS)
+          (fp_text user "R. Side - Jumper Here" (at 0 11.5 ${p.rot}) (layer F.SilkS)
             (effects (font (size 1 1) (thickness 0.15)))
           )
-          (fp_text user "L. Side - Jumper Here" (at 0 11.5) (layer B.SilkS)
+          (fp_text user "L. Side - Jumper Here" (at 0 11.5 ${p.rot}) (layer B.SilkS)
             (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
           )
       `
