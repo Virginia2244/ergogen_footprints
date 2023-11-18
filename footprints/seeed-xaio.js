@@ -2,6 +2,7 @@ module.exports = {
     params: {
       reversable: {type: 'boolean', value: true},
       label: {type: 'boolean', value: true},
+      instructions: {type: 'boolean', value: true},
       traces: {type: 'boolean', value: true},
       P0: {type: 'net', value: 'P0'},
       P1: {type: 'net', value: 'P1'},
@@ -26,7 +27,8 @@ module.exports = {
         [`${p.P3.str}`, `${p.P10.str}`],
         [`${p.P4.str}`, `${p.P9.str}`],
         [`${p.P5.str}`, `${p.P8.str}`],
-        [`${p.P6.str}`, `${p.P7.str}`],]
+        [`${p.P6.str}`, `${p.P7.str}`],
+      ]
 
       const spacing = {
         top_left_pin:  {x: -7.62, y: -7.62},
@@ -46,7 +48,7 @@ module.exports = {
           thru_hole += `(pad ${spacing.total_pin_num - 1 - i} thru_hole oval (at ${spacing.top_right_pin.x} ${spacing.top_right_pin.y + (i)*spacing.pin_dist} ${180 + p.rot}) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask) ${p.reversable ? p.local_net(spacing.total_pin_num - 1 - i).str : pin_nets[i][1]})\n`
         }
         return thru_hole
-      };
+      }
 
       const male_pad = `
       (zone_connect 2)
@@ -61,7 +63,8 @@ module.exports = {
             (xy -0.5 0.625)
           ) 
           (width 0) (fill yes))
-      ))\n`
+        )
+      )\n`
       const female_pad = `
       (zone_connect 2)
       (options (clearance outline) (anchor rect))
@@ -75,7 +78,8 @@ module.exports = {
             (xy -0.15 0)
           ) 
           (width 0) (fill yes))
-      ))\n`
+        )
+      )\n`
 
       const get_solder_pads = () => {
         let solder_pads = ''
@@ -211,7 +215,7 @@ ${'' /* Add the kicad_mod content here*/}
 ${'' /*Getting the through holes*/}
 ${get_thru_hole()}
 
-`
+      `
 
       const reversable_txt = `
 (
@@ -252,7 +256,7 @@ ${get_thru_hole()}
 
     ${'' /*Getting the solder pads*/}
     ${get_solder_pads()}      
-    `
+      `
 
       const lable_txt = `
       ${'' /*Lettering on the silkscreen*/}
@@ -260,7 +264,7 @@ ${get_thru_hole()}
       (effects (font (size 1 1) (thickness 0.15)))
       )
 
-      (fp_text user "Seeed Studio" (at 0 -1.5 ${p.rot}) (layer "F.SilkS")
+      (fp_text user "Seeed" (at 0 -1.5 ${p.rot}) (layer "F.SilkS")
           (effects (font (size 1 1) (thickness 0.15)))
       )
       `
@@ -271,14 +275,22 @@ ${get_thru_hole()}
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       ) 
 
-      (fp_text user "Seeed Studio" (at 0 -1.5 ${p.rot}) (layer "B.SilkS")
+      (fp_text user "Seeed" (at 0 -1.5 ${p.rot}) (layer "B.SilkS")
           (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       )
       `
-     
+      const instructions = `
+          (fp_text user "R. Side - Jumper Here" (at 0 11.5) (layer F.SilkS)
+            (effects (font (size 1 1) (thickness 0.15)))
+          )
+          (fp_text user "L. Side - Jumper Here" (at 0 11.5) (layer B.SilkS)
+            (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
+          )
+      `
       return `
         ${p.reversable ? reversable_txt : standard}
-        ${p.label ? lable_txt: ''}
+        ${p.label ? lable_txt : ''}
+        ${p.instructions ? instructions : ''}
         ${p.label ? (p.reversable ? reversable_lable_txt : '') : ''}
 				)
         ${p.traces ? (p.reversable ? get_traces() : '') : ''}
