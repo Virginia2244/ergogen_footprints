@@ -5,7 +5,7 @@ module.exports = {
       instructions: {type: 'boolean', value: true},
       traces: {type: 'boolean', value: true},
       view: {type: 'boolean', value: true},
-      
+
       P006: {type: 'net', value: 'P006'},
       P008: {type: 'net', value: 'P008'},
       P017: {type: 'net', value: 'P017'},
@@ -94,7 +94,6 @@ module.exports = {
 
       The number is the distance from the pin to the corner of the trace.
       */
-
       const trace_spacing = {
         top_left:     {x: 3.6, y: .85},
         top_right:    {x: 5.2, y: .85},
@@ -295,13 +294,13 @@ module.exports = {
             (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
           )
       `
+
+      /* Solder pads for the nice!view */
       const view_solder_pads = `
       (pad 26 thru_hole oval (at -5.08  10.16  ${p.rot}) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${p.P101.str})
       (pad 27 thru_hole oval (at -2.54  10.16  ${p.rot}) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${p.P102.str})
       (pad 28 thru_hole oval (at  0     10.16  ${p.rot}) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${p.P107.str})
-      
       `
-
 
       /* Code for hte reversable footprints */
       const standard = `
