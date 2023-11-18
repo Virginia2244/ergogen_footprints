@@ -31,6 +31,10 @@ module.exports = {
       RST: {type: 'net', value: 'RST'},
       VCC: {type: 'net', value: 'VCC'},
 
+      P101: {type: 'net', value: 'P101'},
+      P102: {type: 'net', value: 'P102'},
+      P107: {type: 'net', value: 'P107'},
+
 
 
 
@@ -318,7 +322,11 @@ module.exports = {
 ${'' /*Getting the through holes*/}
 ${get_thru_hole()}
 
-      `
+(pad 26 thru_hole oval (at -5.08  10.16  ${p.rot}) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${p.P101.str})
+(pad 27 thru_hole oval (at -2.54  10.16  ${p.rot}) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${p.P102.str})
+(pad 28 thru_hole oval (at  0     10.16  ${p.rot}) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${p.P107.str})
+
+`
 
       /* The code for the reversable footprint */
       const reversable_txt = `
