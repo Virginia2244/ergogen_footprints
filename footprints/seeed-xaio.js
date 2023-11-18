@@ -41,6 +41,13 @@ module.exports = {
         pin_to_via: 4.358,
       }
 
+      const trace_spacing = {
+        top_left:     {x: 3.6, y: .85},
+        top_right:    {x: 5.2, y: .85},
+        bottom_left:  {x: 5.2, y: .85},
+        bottom_right: {x: 3.6, y: .85},
+      }
+
       const get_thru_hole = () => {
         let thru_hole = ''
         for (let i = 0; i < spacing.half_pin_num; i++) {
@@ -173,14 +180,14 @@ module.exports = {
           traces += `\t(segment (start ${adjust_point(spacing.top_right_pin.x - spacing.pin_to_male_pad, spacing.top_right_pin.y + i*spacing.pin_dist)}) (end ${adjust_point(spacing.top_right_pin.x, spacing.top_right_pin.y + i*spacing.pin_dist)}) (width 0.25) (layer "B.Cu") (net 1))`
 
           /*Left female pad to right via F*/
-          traces += `\t(segment (start ${adjust_point(spacing.top_left_pin.x + spacing.pin_to_female_pad, spacing.top_left_pin.y + i*spacing.pin_dist)}) (end ${adjust_point(spacing.top_left_pin.x + 3.57, spacing.top_left_pin.y - .725 + i*spacing.pin_dist)}) (width 0.25) (layer "F.Cu") (net 1))`
-          traces += `\t(segment (start ${adjust_point(spacing.top_left_pin.x + 3.57, spacing.top_left_pin.y - .725 + i*spacing.pin_dist)}) (end ${adjust_point(spacing.top_right_pin.x - 5.088, spacing.top_right_pin.y - .725 + i*spacing.pin_dist)}) (width 0.25) (layer "F.Cu") (net 1))`
-          traces += `\t(segment (start ${adjust_point(spacing.top_right_pin.x - 5.088, spacing.top_right_pin.y - .725 + i*spacing.pin_dist)}) (end ${adjust_point(spacing.top_right_pin.x - spacing.pin_to_via, spacing.top_right_pin.y + i*spacing.pin_dist)})  (width 0.25) (layer "F.Cu") (net 1))`
+          traces += `\t(segment (start ${adjust_point(spacing.top_left_pin.x + spacing.pin_to_female_pad, spacing.top_left_pin.y + i*spacing.pin_dist)}) (end ${adjust_point(spacing.top_left_pin.x + trace_spacing.top_left.x, spacing.top_left_pin.y - trace_spacing.top_left.y + i*spacing.pin_dist)}) (width 0.25) (layer "F.Cu") (net 1))`
+          traces += `\t(segment (start ${adjust_point(spacing.top_left_pin.x + trace_spacing.top_left.x, spacing.top_left_pin.y - trace_spacing.top_left.y + i*spacing.pin_dist)}) (end ${adjust_point(spacing.top_right_pin.x - trace_spacing.top_right.x, spacing.top_right_pin.y - trace_spacing.top_right.y + i*spacing.pin_dist)}) (width 0.25) (layer "F.Cu") (net 1))`
+          traces += `\t(segment (start ${adjust_point(spacing.top_right_pin.x - trace_spacing.top_right.x, spacing.top_right_pin.y - trace_spacing.top_right.y + i*spacing.pin_dist)}) (end ${adjust_point(spacing.top_right_pin.x - spacing.pin_to_via, spacing.top_right_pin.y + i*spacing.pin_dist)})  (width 0.25) (layer "F.Cu") (net 1))`
           
           /*Right female pad to left via F*/
-          traces += `\t(segment (start ${adjust_point(spacing.top_right_pin.x - spacing.pin_to_female_pad, spacing.top_right_pin.y + i*spacing.pin_dist)})   (end ${adjust_point(spacing.top_right_pin.x - 3.57, spacing.top_right_pin.y + .725 + i*spacing.pin_dist)})   (width 0.25) (layer "F.Cu") (net 1))`
-          traces += `\t(segment (start ${adjust_point(spacing.top_right_pin.x - 3.57, spacing.top_right_pin.y + .725 + i*spacing.pin_dist)})   (end ${adjust_point(spacing.top_left_pin.x + 5.088, spacing.top_left_pin.y + .725 + i*spacing.pin_dist)}) (width 0.25) (layer "F.Cu") (net 1))`
-          traces += `\t(segment (start ${adjust_point(spacing.top_left_pin.x + 5.088, spacing.top_left_pin.y + .725 + i*spacing.pin_dist)}) (end ${adjust_point(spacing.top_left_pin.x + spacing.pin_to_via, spacing.top_left_pin.y + i*spacing.pin_dist)})  (width 0.25) (layer "F.Cu") (net 1))`
+          traces += `\t(segment (start ${adjust_point(spacing.top_right_pin.x - spacing.pin_to_female_pad, spacing.top_right_pin.y + i*spacing.pin_dist)})   (end ${adjust_point(spacing.top_right_pin.x - trace_spacing.bottom_right.x, spacing.top_right_pin.y + trace_spacing.bottom_right.y + i*spacing.pin_dist)})   (width 0.25) (layer "F.Cu") (net 1))`
+          traces += `\t(segment (start ${adjust_point(spacing.top_right_pin.x - trace_spacing.bottom_right.x, spacing.top_right_pin.y + trace_spacing.bottom_right.y + i*spacing.pin_dist)})   (end ${adjust_point(spacing.top_left_pin.x + trace_spacing.bottom_left.x, spacing.top_left_pin.y + trace_spacing.bottom_left.y + i*spacing.pin_dist)}) (width 0.25) (layer "F.Cu") (net 1))`
+          traces += `\t(segment (start ${adjust_point(spacing.top_left_pin.x + trace_spacing.bottom_left.x, spacing.top_left_pin.y + trace_spacing.bottom_left.y + i*spacing.pin_dist)}) (end ${adjust_point(spacing.top_left_pin.x + spacing.pin_to_via, spacing.top_left_pin.y + i*spacing.pin_dist)})  (width 0.25) (layer "F.Cu") (net 1))`
 
           /*Left female pad to left via B*/
           traces += `\t(segment (start ${adjust_point(spacing.top_left_pin.x + spacing.pin_to_female_pad, spacing.top_left_pin.y + i*spacing.pin_dist)}) (end ${adjust_point(spacing.top_left_pin.x + spacing.pin_to_via, spacing.top_left_pin.y + i*spacing.pin_dist)}) (width 0.25) (layer "B.Cu") (net 1))`
