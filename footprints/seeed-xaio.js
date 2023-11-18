@@ -20,6 +20,7 @@ module.exports = {
       V3: {type: 'net', value: 'V3'},
     },
     body: p => {
+      /* Putting the nets into an array so that it can be itterated through */
       const pin_nets = [
         [`${p.P0.str}`, `${p.VCC.str}`],
         [`${p.P1.str}`, `${p.GND.str}`],
@@ -30,6 +31,18 @@ module.exports = {
         [`${p.P6.str}`, `${p.P7.str}`],
       ]
 
+      /*These constants are the magic of this code, they allow us to adjust almost everything important aspect of the microcontroller.
+      The reason this is helpfull is that if you don't want to use a Seeed Xiao you can easily adjust the paramiters to make a different microcontroller.
+      
+      top_left_pin: This is the position of the top left pin of the microcontroller.
+      top_right_pin: This is the position of the top right pin of the microcontroller.
+      pin_dist: The distance in between each pin horizontaly
+      total_pin_num: The total number of pins the microcontroller has. This number must be divisable by two.
+      half_pin_num: Half the total number of pins.
+      pin_to_male_pad: The distance from the pin on the microcontroller to the male pad.
+      pin_to_female_pad: The distance from the pin on te microcontroller to the female pad.
+      pin_to_via: the distance from the pin on the microcontroller to the via.
+      */
       const spacing = {
         top_left_pin:  {x: -7.62, y: -7.62},
         top_right_pin: {x: 7.62, y: -7.62}, 
@@ -41,6 +54,19 @@ module.exports = {
         pin_to_via: 4.358,
       }
 
+      /*The other distances needed to make the traces work. This is basically just two points. 
+      
+      top_left      top_right
+        ^              ^
+        /``````````````\
+       [] 0             O []
+           \............../
+            ^             ^
+      bottom_left   bottom_right
+
+      The number is the distance from the pin to the corner of the trace.
+      */
+
       const trace_spacing = {
         top_left:     {x: 3.6, y: .85},
         top_right:    {x: 5.2, y: .85},
@@ -48,8 +74,11 @@ module.exports = {
         bottom_right: {x: 3.6, y: .85},
       }
 
+      /*Generates all of the through holes on the microcontroller*/
       const get_thru_hole = () => {
         let thru_hole = ''
+        /* Starts at the top two microcontrollers and goes down. 
+        It makes the nets internal if it reversable and straight to the pin_nets if not.*/
         for (let i = 0; i < spacing.half_pin_num; i++) {
           thru_hole += `(pad ${i}                             thru_hole oval (at ${spacing.top_left_pin.x}  ${spacing.top_left_pin.y + (i)*spacing.pin_dist}  ${p.rot})       (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask) ${p.reversable ? p.local_net(i).str : pin_nets[i][0]})\n`
           thru_hole += `(pad ${spacing.total_pin_num - 1 - i} thru_hole oval (at ${spacing.top_right_pin.x} ${spacing.top_right_pin.y + (i)*spacing.pin_dist} ${180 + p.rot}) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask) ${p.reversable ? p.local_net(spacing.total_pin_num - 1 - i).str : pin_nets[i][1]})\n`
@@ -57,6 +86,13 @@ module.exports = {
         return thru_hole
       }
 
+      /*I made the male pad and female pads that I stole from infused-kim at https://nilnil.notion.site/Convert-Kicad-Footprints-to-Ergogen-8340ce87ad554c69af4e3f92bc9a0898
+      into constants so that I didn't have to copy and paste them a million times in get_solder_pads. Changing these will change the shape of the pads in the reversable footprint.
+      
+            |`````\                 \```````|
+      Male: |      >        Female:   >     |
+            |...../                 /.......|
+      */
       const male_pad = `
       (zone_connect 2)
       (options (clearance outline) (anchor rect))
@@ -88,9 +124,14 @@ module.exports = {
         )
       )\n`
 
+      /*This generates all of the solder pads that make the reversable footprints possible.*/
       const get_solder_pads = () => {
         let solder_pads = ''
-        for (let i = 0; i < (spacing.half_pin_num); i++) {
+
+      /*It starts with making the first row then itterates down.
+      Front means the front layer of the pcb while back means the back layer of the pcb.
+      left and right mean the left and right side of the microcontroller*/
+      for (let i = 0; i < (spacing.half_pin_num); i++) {
           //Left VIAS
           solder_pads += `\t\t(pad ${i} thru_hole circle (at ${spacing.top_left_pin.x + spacing.pin_to_via} ${spacing.top_left_pin.y + (i)*spacing.pin_dist}) (size 0.8 0.8) (drill 0.4) (layers *.Cu *.Mask) ${pin_nets[i][0]})\n`
           
@@ -133,8 +174,9 @@ module.exports = {
         return solder_pads
       }
 
-      /* I stole this code from infused-kim's guide at https://nilnil.notion.site/Convert-Kicad-Footprints-to-Ergogen-8340ce87ad554c69af4e3f92bc9a0898
-      I have no idea how it works. I am pretty sure that it interfaces with the other ergogen code in a way that I don't understand.*/
+      /*I stole get_at_coordinates() and adjust_point() from infused-kim's guide at https://nilnil.notion.site/Convert-Kicad-Footprints-to-Ergogen-8340ce87ad554c69af4e3f92bc9a0898
+      I have no idea how it works. I am pretty sure that it interfaces with the other ergogen code in fancy ways.
+      I do know that get_at_coordinates() is a helper funciton for adjust_point*/
       const get_at_coordinates = () => {
         const pattern = /\(at (-?[\d\.]*) (-?[\d\.]*) (-?[\d\.]*)\)/;
         const matches = p.at.match(pattern);
@@ -145,6 +187,7 @@ module.exports = {
         }
       }
 
+      /*Call adjust_point if you want to make something move that is outisde of the main body of the footprint. Aka after the ')' in the return statement*/
       const adjust_point = (x, y) => {
         const at_l = get_at_coordinates();
         if(at_l == null) {
@@ -167,10 +210,11 @@ module.exports = {
         const point_str = `${nx.toFixed(2)} ${ny.toFixed(2)}`;
         return point_str;
       }
-    /*End of swiped code*/
 
+      /*This generates traces that connect all the internal peices that should be connected*/
       const get_traces = () => {
         let traces = ``
+        /*Starts by generating all of the traces for one row, then itterates down all of the pins.*/
         for (let i = 0; i < (spacing.half_pin_num); i++) {
           /* Left pin to Right male pad F and B*/
           traces += `\t(segment (start ${adjust_point(spacing.top_left_pin.x + spacing.pin_to_male_pad, spacing.top_left_pin.y + i*spacing.pin_dist)}) (end ${adjust_point(spacing.top_left_pin.x, spacing.top_left_pin.y + i*spacing.pin_dist)}) (width 0.25) (layer "F.Cu") (net 1))`
@@ -198,6 +242,7 @@ module.exports = {
         return traces
       }
 
+      /* Code for hte reversable footprints */
       const standard = `
 ${'' /* Add the kicad_mod content here*/}
 (footprint "xiao-ble-tht" (version 20211014) (generator pcbnew)
@@ -224,6 +269,7 @@ ${get_thru_hole()}
 
       `
 
+      /* The code for the reversable footprint */
       const reversable_txt = `
 (
   footprint "xiao-ble-tht" (version 20211014) (generator pcbnew)
@@ -263,8 +309,12 @@ ${get_thru_hole()}
 
     ${'' /*Getting the solder pads*/}
     ${get_solder_pads()}      
+
+    ${'' /* Getting the lables */}
+    ${p.label ? reversable_lable_txt : ''}
       `
 
+      /* Adding lables on the front side of the pcb */
       const lable_txt = `
       ${'' /*Lettering on the silkscreen*/}
       (fp_text user "XIAO" (at 0 0.5 ${p.rot}) (layer "F.SilkS")
@@ -276,6 +326,7 @@ ${get_thru_hole()}
       )
       `
 
+      /* Adds lables on the back side of the pcb */
       const reversable_lable_txt = `
       ${'' /*Lettering on the silkscreen*/}
       (fp_text user "XIAO" (at 0 0.5 ${p.rot}) (layer "B.SilkS")
@@ -286,6 +337,8 @@ ${get_thru_hole()}
           (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       )
       `
+
+      /* Instructions about which side the solder should be on. */
       const instructions = `
           (fp_text user "R. Side - Jumper Here" (at 0 11.5 ${p.rot}) (layer F.SilkS)
             (effects (font (size 1 1) (thickness 0.15)))
@@ -298,7 +351,6 @@ ${get_thru_hole()}
         ${p.reversable ? reversable_txt : standard}
         ${p.label ? lable_txt : ''}
         ${p.instructions ? instructions : ''}
-        ${p.label ? (p.reversable ? reversable_lable_txt : '') : ''}
 				)
         ${p.traces ? (p.reversable ? get_traces() : '') : ''}
       `
