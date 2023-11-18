@@ -242,6 +242,40 @@ module.exports = {
         return traces
       }
 
+      /* Adding lables on the front side of the pcb */
+      const lable_txt = `
+      ${'' /*Lettering on the silkscreen*/}
+      (fp_text user "XIAO" (at 0 0.5 ${p.rot}) (layer "F.SilkS")
+      (effects (font (size 1 1) (thickness 0.15)))
+      )
+
+      (fp_text user "Seeed" (at 0 -1.5 ${p.rot}) (layer "F.SilkS")
+          (effects (font (size 1 1) (thickness 0.15)))
+      )
+      `
+
+      /* Adds lables on the back side of the pcb */
+      const reversable_lable_txt = `
+      ${'' /*Lettering on the silkscreen*/}
+      (fp_text user "XIAO" (at 0 0.5 ${p.rot}) (layer "B.SilkS")
+      (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
+      ) 
+
+      (fp_text user "Seeed" (at 0 -1.5 ${p.rot}) (layer "B.SilkS")
+          (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
+      )
+      `
+
+      /* Instructions about which side the solder should be on. */
+      const instructions = `
+          (fp_text user "R. Side - Jumper Here" (at 0 11.5 ${p.rot}) (layer F.SilkS)
+            (effects (font (size 1 1) (thickness 0.15)))
+          )
+          (fp_text user "L. Side - Jumper Here" (at 0 11.5 ${p.rot}) (layer B.SilkS)
+            (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
+          )
+      `
+      
       /* Code for hte reversable footprints */
       const standard = `
 ${'' /* Add the kicad_mod content here*/}
@@ -314,39 +348,6 @@ ${get_thru_hole()}
     ${p.label ? reversable_lable_txt : ''}
       `
 
-      /* Adding lables on the front side of the pcb */
-      const lable_txt = `
-      ${'' /*Lettering on the silkscreen*/}
-      (fp_text user "XIAO" (at 0 0.5 ${p.rot}) (layer "F.SilkS")
-      (effects (font (size 1 1) (thickness 0.15)))
-      )
-
-      (fp_text user "Seeed" (at 0 -1.5 ${p.rot}) (layer "F.SilkS")
-          (effects (font (size 1 1) (thickness 0.15)))
-      )
-      `
-
-      /* Adds lables on the back side of the pcb */
-      const reversable_lable_txt = `
-      ${'' /*Lettering on the silkscreen*/}
-      (fp_text user "XIAO" (at 0 0.5 ${p.rot}) (layer "B.SilkS")
-      (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-      ) 
-
-      (fp_text user "Seeed" (at 0 -1.5 ${p.rot}) (layer "B.SilkS")
-          (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-      )
-      `
-
-      /* Instructions about which side the solder should be on. */
-      const instructions = `
-          (fp_text user "R. Side - Jumper Here" (at 0 11.5 ${p.rot}) (layer F.SilkS)
-            (effects (font (size 1 1) (thickness 0.15)))
-          )
-          (fp_text user "L. Side - Jumper Here" (at 0 11.5 ${p.rot}) (layer B.SilkS)
-            (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
-          )
-      `
       return `
         ${p.reversable ? reversable_txt : standard}
         ${p.label ? lable_txt : ''}
