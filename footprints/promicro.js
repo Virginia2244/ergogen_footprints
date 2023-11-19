@@ -288,7 +288,11 @@ module.exports = {
 
       /* Code for hte reversable footprints */
       const standard = `
-      (module ProMicro ${p.at /* parametric position */} (layer F.Cu) (tedit 5A06A962)
+      (module ProMicro ${p.at /* parametric position */} 
+      (layer F.Cu) 
+      (tedit 5A06A962)
+      (descr "Pro Micro footprint")
+      (tags "promicro ProMicro")
 
       (fp_line (start 8.89  -15.24) (end 8.89   15.24) (layer F.SilkS) (width 0.15))
       (fp_line (start 8.89  -15.24) (end 3.81   -15.24) (layer F.SilkS) (width 0.15))
@@ -307,9 +311,11 @@ ${get_thru_hole()}
 
       /* The code for the reversable footprint */
       const reversable_txt = `
-      (module ProMicro ${p.at /* parametric position */} (layer F.Cu) (tedit 5A06A962)
+      (module ProMicro ${p.at /* parametric position */} 
+      (layer F.Cu) 
+      (tedit 5A06A962)
       (descr "Pro Micro footprint")
-      (tags "promicro ProMicro")   
+      (tags "promicro ProMicro")
       
       (fp_line (start -8.89 15.24)  (end 8.89   15.24) (layer B.SilkS) (width 0.15))
       (fp_line (start 8.89  15.24)  (end 8.89   -15.24) (layer B.SilkS) (width 0.15))
