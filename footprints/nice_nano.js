@@ -331,7 +331,7 @@ ${'' /*Getting the through holes*/}
 ${get_thru_hole()}
 
 ${''}
-${view ? view_solder_pads : ''}
+${p.view ? view_solder_pads : ''}
 
 `
 
