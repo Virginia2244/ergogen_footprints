@@ -6,57 +6,48 @@ module.exports = {
       traces: {type: 'boolean', value: true},
       view: {type: 'boolean', value: true},
 
-      P006: {type: 'net', value: 'P006'},
-      P008: {type: 'net', value: 'P008'},
-      P017: {type: 'net', value: 'P017'},
-      P020: {type: 'net', value: 'P020'},
-      P022: {type: 'net', value: 'P022'},
-      P024: {type: 'net', value: 'P024'},
-      P100: {type: 'net', value: 'P100'},
-      P011: {type: 'net', value: 'P011'},
-      P104: {type: 'net', value: 'P104'},
-      P106: {type: 'net', value: 'P106'},
+      P1: {type: 'net', value: 'P1'},
+      P0: {type: 'net', value: 'P0'},
+      P2: {type: 'net', value: 'P2'},
+      P3: {type: 'net', value: 'P3'},
+      P4: {type: 'net', value: 'P4'},
+      P5: {type: 'net', value: 'P5'},
+      P6: {type: 'net', value: 'P6'},
+      P7: {type: 'net', value: 'P7'},
+      P8: {type: 'net', value: 'P8'},
+      P9: {type: 'net', value: 'P9'},
 
-      P031: {type: 'net', value: 'P031'},
-      P029: {type: 'net', value: 'P029'},
-      P002: {type: 'net', value: 'P002'},
-      P115: {type: 'net', value: 'P115'},
-      P113: {type: 'net', value: 'P113'},
-      P111: {type: 'net', value: 'P111'},
-      P010: {type: 'net', value: 'P010'},
-      P009: {type: 'net', value: 'P009'},
+      P21: {type: 'net', value: 'P21'},
+      P20: {type: 'net', value: 'P20'},
+      P19: {type: 'net', value: 'P19'},
+      P18: {type: 'net', value: 'P18'},
+      P15: {type: 'net', value: 'P15'},
+      P14: {type: 'net', value: 'P14'},
+      P16: {type: 'net', value: 'P16'},
+      P10: {type: 'net', value: 'P10'},
 
-      BPOS: {type: 'net', value: 'BPOS'},
-      BNEG: {type: 'net', value: 'BNEG'},
       RAW: {type: 'net', value: 'RAW'},
-      GND: {type: 'net', value: 'GND'},
       RST: {type: 'net', value: 'RST'},
       VCC: {type: 'net', value: 'VCC'},
-
-      P101: {type: 'net', value: 'P101'},
-      P102: {type: 'net', value: 'P102'},
-      P107: {type: 'net', value: 'P107'},
-
-
+      GND: {type: 'net', value: 'GND'},
 
 
     },
     body: p => {
       /* Putting the nets into an array so that it can be itterated through */
       const pin_nets = [
-        [`${p.BNEG.str}`, `${p.BPOS.str}`],
-        [`${p.P006.str}`, `${p.RAW.str}`],
-        [`${p.P008.str}`, `${p.GND.str}`],
-        [`${p.GND.str}` , `${p.RST.str}`],
-        [`${p.GND.str}` , `${p.VCC.str}`],
-        [`${p.P017.str}`, `${p.P031.str}`],
-        [`${p.P020.str}`, `${p.P029.str}`],
-        [`${p.P022.str}`, `${p.P002.str}`],
-        [`${p.P024.str}`, `${p.P115.str}`],
-        [`${p.P100.str}`, `${p.P113.str}`],
-        [`${p.P011.str}`, `${p.P111.str}`],
-        [`${p.P104.str}`, `${p.P010.str}`],
-        [`${p.P106.str}`, `${p.P009.str}`],
+        [`${p.P1.str}`,  `${p.RAW.str}`],
+        [`${p.P0.str}`,  `${p.GND.str}`],
+        [`${p.GND.str}`, `${p.RST.str}`],
+        [`${p.GND.str}`, `${p.VCC.str}`],
+        [`${p.P2.str}`,  `${p.P21.str}`],
+        [`${p.P3.str}`,  `${p.P20.str}`],
+        [`${p.P4.str}`,  `${p.P19.str}`],
+        [`${p.P5.str}`,  `${p.P18.str}`],
+        [`${p.P6.str}`,  `${p.P15.str}`],
+        [`${p.P7.str}`,  `${p.P14.str}`],
+        [`${p.P8.str}`,  `${p.P16.str}`],
+        [`${p.P9.str}`,  `${p.P10.str}`],
       ]
 
       /*These constants are the magic of this code, they allow us to adjust almost everything important aspect of the microcontroller.
@@ -72,11 +63,11 @@ module.exports = {
       pin_to_via: the distance from the pin on the microcontroller to the via.
       */
       const spacing = {
-        top_left_pin:  {x: -7.62, y: -15.24},
-        top_right_pin: {x: 7.62, y: -15.24}, 
+        top_left_pin:  {x: -7.62, y: -13.97},
+        top_right_pin: {x: 7.62, y: -13.97}, 
         pin_dist: 2.54,
-        total_pin_num: 26,
-        half_pin_num: 13,
+        total_pin_num: 24,
+        half_pin_num: 12,
         pin_to_male_pad: 2,
         pin_to_female_pad: 2.845,
         pin_to_via: 4.358,
@@ -272,7 +263,7 @@ module.exports = {
       /* Adding lables on the front side of the pcb */
       const lable_txt = `
       ${'' /*Lettering on the silkscreen*/}
-      (fp_text user "nice_nano" (at 0 -20 ${p.rot}) (layer F.SilkS)
+      (fp_text user "promicro" (at 0 -20 ${p.rot}) (layer F.SilkS)
         (effects (font (size 1 1) (thickness 0.15)))
       )
       `
@@ -280,7 +271,7 @@ module.exports = {
       /* Adds lables on the back side of the pcb */
       const reversable_lable_txt = `
       ${'' /*Lettering on the silkscreen*/}
-      (fp_text user "nice_nano" (at 0 -20 ${p.rot}) (layer B.SilkS)
+      (fp_text user "promicro" (at 0 -20 ${p.rot}) (layer B.SilkS)
         (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       )
       `
@@ -295,86 +286,48 @@ module.exports = {
           )
       `
 
-      /* Solder pads for the nice!view */
-      const view_solder_pads = `
-      (pad 26 thru_hole oval (at -5.08  10.16  ${p.rot}) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${p.P101.str})
-      (pad 27 thru_hole oval (at -2.54  10.16  ${p.rot}) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${p.P102.str})
-      (pad 28 thru_hole oval (at  0     10.16  ${p.rot}) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${p.P107.str})
-      `
-
       /* Code for hte reversable footprints */
       const standard = `
-      (module nice_nano ${p.at /* parametric position */} (layer F.Cu) (tedit 64CF2E17)
+      (module ProMicro ${p.at /* parametric position */} (layer F.Cu) (tedit 5A06A962)
 
-      
-      (fp_line (start 6.29 -11.43) (end 8.95 -11.43) (layer F.SilkS) (width 0.12))
-      (fp_line (start 6.29 -14.03) (end 8.95 -14.03) (layer F.SilkS) (width 0.12))
-      (fp_line (start 6.29 -14.03) (end 6.29 16.57) (layer F.SilkS) (width 0.12))
-      (fp_line (start 6.29 16.57) (end 8.95 16.57) (layer F.SilkS) (width 0.12))
-      (fp_line (start 8.95 -14.03) (end 8.95 16.57) (layer F.SilkS) (width 0.12))
-      (fp_line (start 3.556 -18.034) (end 3.556 -16.51) (layer Dwgs.User) (width 0.15))
-      (fp_line (start 8.89 16.51) (end 8.89 -14.03) (layer F.CrtYd) (width 0.15))
-      (fp_line (start 8.89 -14.03) (end -8.89 -14.03) (layer F.CrtYd) (width 0.15))
-      (fp_line (start -8.89 -14.03) (end -8.89 16.51) (layer F.CrtYd) (width 0.15))
-      (fp_line (start -8.89 16.51) (end 8.89 16.51) (layer F.CrtYd) (width 0.15))
-      (fp_line (start -3.81 -16.51) (end -3.81 -18.034) (layer Dwgs.User) (width 0.15))
-      (fp_line (start -3.81 -18.034) (end 3.556 -18.034) (layer Dwgs.User) (width 0.15))
-      (fp_line (start -8.95 -14.03) (end -6.29 -14.03) (layer F.SilkS) (width 0.12))
-      (fp_line (start -8.95 -14.03) (end -8.95 16.57) (layer F.SilkS) (width 0.12))
-      (fp_line (start -8.95 16.57) (end -6.29 16.57) (layer F.SilkS) (width 0.12))
-      (fp_line (start -6.29 -14.03) (end -6.29 16.57) (layer F.SilkS) (width 0.12))
-      (fp_line (start -8.89 -16.51) (end 8.89 -16.51) (layer F.Fab) (width 0.12))
-      (fp_line (start -8.89 -16.51) (end -8.89 -14) (layer F.Fab) (width 0.12))
-      (fp_line (start 8.89 -16.51) (end 8.89 -14) (layer F.Fab) (width 0.12))
+      (fp_line (start 8.89  -15.24) (end 8.89   15.24) (layer F.SilkS) (width 0.15))
+      (fp_line (start 8.89  -15.24) (end 3.81   -15.24) (layer F.SilkS) (width 0.15))
+      (fp_line (start 3.81  -15.24) (end 3.81   -17.78) (layer F.SilkS) (width 0.15))
+      (fp_line (start 3.81  -17.78) (end -3.81  -17.78) (layer F.SilkS) (width 0.15))
+      (fp_line (start -3.81 -17.78) (end -3.81  -15.24) (layer F.SilkS) (width 0.15))
+      (fp_line (start -3.81 -15.24) (end -8.89  -15.24) (layer F.SilkS) (width 0.15))
+      (fp_line (start -8.89 -15.24) (end -8.89  15.24) (layer F.SilkS) (width 0.15))
+      (fp_line (start -8.89 15.24)  (end 8.89   15.24) (layer F.SilkS) (width 0.15))
 
 ${'' /*Getting the through holes*/}
 ${get_thru_hole()}
 
-${''}
-${view ? view_solder_pads : ''}
 
-`
+      `
 
       /* The code for the reversable footprint */
       const reversable_txt = `
-      (module nice_nano ${p.at /* parametric position */} (layer F.Cu) (tedit 64CF2E17)
-            
+      (module ProMicro ${p.at /* parametric position */} (layer F.Cu) (tedit 5A06A962)
+      (descr "Pro Micro footprint")
+      (tags "promicro ProMicro")   
       
-      (fp_line (start 6.29 -11.43) (end 8.95 -11.43) (layer F.SilkS) (width 0.12))
-      (fp_line (start -8.95 -11.43) (end -6.29 -11.43) (layer B.SilkS) (width 0.12))
-      (fp_line (start 6.29 -14.03) (end 8.95 -14.03) (layer F.SilkS) (width 0.12))
-      (fp_line (start 6.29 -14.03) (end 6.29 16.57) (layer F.SilkS) (width 0.12))
-      (fp_line (start 6.29 16.57) (end 8.95 16.57) (layer F.SilkS) (width 0.12))
-      (fp_line (start 8.95 -14.03) (end 8.95 16.57) (layer F.SilkS) (width 0.12))
-      (fp_line (start 3.556 -18.034) (end 3.556 -16.51) (layer Dwgs.User) (width 0.15))
-      (fp_line (start 8.89 16.51) (end 8.89 -14.03) (layer F.CrtYd) (width 0.15))
-      (fp_line (start 8.89 -14.03) (end -8.89 -14.03) (layer F.CrtYd) (width 0.15))
-      (fp_line (start -8.89 -14.03) (end -8.89 16.51) (layer F.CrtYd) (width 0.15))
-      (fp_line (start -8.89 16.51) (end 8.89 16.51) (layer F.CrtYd) (width 0.15))
-      (fp_line (start -3.81 -16.51) (end -3.81 -18.034) (layer Dwgs.User) (width 0.15))
-      (fp_line (start -3.81 -18.034) (end 3.556 -18.034) (layer Dwgs.User) (width 0.15))
-      (fp_line (start -8.95 -14.03) (end -6.29 -14.03) (layer F.SilkS) (width 0.12))
-      (fp_line (start -8.95 -14.03) (end -8.95 16.57) (layer F.SilkS) (width 0.12))
-      (fp_line (start -8.95 16.57) (end -6.29 16.57) (layer F.SilkS) (width 0.12))
-      (fp_line (start -6.29 -14.03) (end -6.29 16.57) (layer F.SilkS) (width 0.12))
-      (fp_line (start -6.29 -14.03) (end -8.95 -14.03) (layer B.SilkS) (width 0.12))
-      (fp_line (start -6.29 -14.03) (end -6.29 16.57) (layer B.SilkS) (width 0.12))
-      (fp_line (start -6.29 16.57) (end -8.95 16.57) (layer B.SilkS) (width 0.12))
-      (fp_line (start -8.95 -14.03) (end -8.95 16.57) (layer B.SilkS) (width 0.12))
-      (fp_line (start -8.89 16.51) (end -8.89 -14.03) (layer B.CrtYd) (width 0.15))
-      (fp_line (start -8.89 -14.03) (end 8.89 -14.03) (layer B.CrtYd) (width 0.15))
-      (fp_line (start 8.89 -14.03) (end 8.89 16.51) (layer B.CrtYd) (width 0.15))
-      (fp_line (start 8.89 16.51) (end -8.89 16.51) (layer B.CrtYd) (width 0.15))
-      (fp_line (start 8.95 -14.03) (end 6.29 -14.03) (layer B.SilkS) (width 0.12))
-      (fp_line (start 8.95 -14.03) (end 8.95 16.57) (layer B.SilkS) (width 0.12))
-      (fp_line (start 8.95 16.57) (end 6.29 16.57) (layer B.SilkS) (width 0.12))
-      (fp_line (start 6.29 -14.03) (end 6.29 16.57) (layer B.SilkS) (width 0.12))
-      (fp_line (start -8.89 -16.51) (end 8.89 -16.51) (layer F.Fab) (width 0.12))
-      (fp_line (start -8.89 -16.51) (end -8.89 -14) (layer F.Fab) (width 0.12))
-      (fp_line (start 8.89 -16.51) (end 8.89 -14) (layer F.Fab) (width 0.12))
-      (fp_line (start -8.89 -16.5) (end -8.89 -13.99) (layer B.Fab) (width 0.12))
-      (fp_line (start 8.89 -16.51) (end 8.89 -14) (layer B.Fab) (width 0.12))
-      (fp_line (start -8.89 -16.51) (end 8.89 -16.51) (layer B.Fab) (width 0.12))
+      (fp_line (start -8.89 15.24)  (end 8.89   15.24) (layer B.SilkS) (width 0.15))
+      (fp_line (start 8.89  15.24)  (end 8.89   -15.24) (layer B.SilkS) (width 0.15))
+      (fp_line (start 8.89  -15.24) (end 3.81   -15.24) (layer B.SilkS) (width 0.15))
+      (fp_line (start 3.81  -15.24) (end 3.81   -17.78) (layer B.SilkS) (width 0.15))
+      (fp_line (start 3.81  -17.78) (end -3.81  -17.78) (layer B.SilkS) (width 0.15))
+      (fp_line (start -3.81 -17.78) (end -3.81  -15.24) (layer B.SilkS) (width 0.15))
+      (fp_line (start -3.81 -15.24) (end -8.89  -15.24) (layer B.SilkS) (width 0.15))
+      (fp_line (start -8.89 -15.24) (end -8.89  15.24) (layer B.SilkS) (width 0.15))
+      (fp_line (start 8.89  -15.24) (end 8.89   15.24) (layer F.SilkS) (width 0.15))
+      (fp_line (start 8.89  -15.24) (end 3.81   -15.24) (layer F.SilkS) (width 0.15))
+      (fp_line (start 3.81  -15.24) (end 3.81   -17.78) (layer F.SilkS) (width 0.15))
+      (fp_line (start 3.81  -17.78) (end -3.81  -17.78) (layer F.SilkS) (width 0.15))
+      (fp_line (start -3.81 -17.78) (end -3.81  -15.24) (layer F.SilkS) (width 0.15))
+      (fp_line (start -3.81 -15.24) (end -8.89  -15.24) (layer F.SilkS) (width 0.15))
+      (fp_line (start -8.89 -15.24) (end -8.89  15.24) (layer F.SilkS) (width 0.15))
+      (fp_line (start -8.89 15.24)  (end 8.89   15.24) (layer F.SilkS) (width 0.15))
+      
 
     ${'' /*Getting the through holes*/}
     ${get_thru_hole()}
