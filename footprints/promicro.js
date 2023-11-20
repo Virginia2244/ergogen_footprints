@@ -57,7 +57,6 @@ module.exports = {
       top_right_pin: This is the position of the top right pin of the microcontroller.
       pin_dist: The distance in between each pin horizontaly
       total_pin_num: The total number of pins the microcontroller has. This number must be divisable by two.
-      half_pin_num: Half the total number of pins.
       pin_to_male_pad: The distance from the pin on the microcontroller to the male pad.
       pin_to_female_pad: The distance from the pin on te microcontroller to the female pad.
       pin_to_via: the distance from the pin on the microcontroller to the via.
@@ -67,7 +66,6 @@ module.exports = {
         top_right_pin: {x: 7.62, y: -13.97}, 
         pin_dist: 2.54,
         total_pin_num: 24,
-        half_pin_num: 12,
         pin_to_male_pad: 2,
         pin_to_female_pad: 2.845,
         pin_to_via: 4.358,
@@ -97,7 +95,7 @@ module.exports = {
         let thru_hole = ''
         /* Starts at the top two microcontrollers and goes down. 
         It makes the nets internal if it reversable and straight to the pin_nets if not.*/
-        for (let i = 0; i < spacing.half_pin_num; i++) {
+        for (let i = 0; i < spacing.total_pin_num/2; i++) {
           thru_hole += `(pad ${i}                             thru_hole oval (at ${spacing.top_left_pin.x}  ${spacing.top_left_pin.y + (i)*spacing.pin_dist}  ${p.rot})       (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${p.reversable ? p.local_net(i).str : pin_nets[i][0]})\n`
           thru_hole += `(pad ${spacing.total_pin_num - 1 - i} thru_hole oval (at ${spacing.top_right_pin.x} ${spacing.top_right_pin.y + (i)*spacing.pin_dist} ${180 + p.rot}) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${p.reversable ? p.local_net(spacing.total_pin_num - 1 - i).str : pin_nets[i][1]})\n`
         }
@@ -149,7 +147,7 @@ module.exports = {
       /*It starts with making the first row then itterates down.
       Front means the front layer of the pcb while back means the back layer of the pcb.
       left and right mean the left and right side of the microcontroller*/
-      for (let i = 0; i < (spacing.half_pin_num); i++) {
+      for (let i = 0; i < (spacing.total_pin_num/2); i++) {
           //Left VIAS
           solder_pads += `\t\t(pad ${i} thru_hole circle (at ${spacing.top_left_pin.x + spacing.pin_to_via} ${spacing.top_left_pin.y + (i)*spacing.pin_dist}) (size 0.8 0.8) (drill 0.4) (layers *.Cu *.Mask) ${pin_nets[i][0]})\n`
           
@@ -233,7 +231,7 @@ module.exports = {
       const get_traces = () => {
         let traces = ``
         /*Starts by generating all of the traces for one row, then itterates down all of the pins.*/
-        for (let i = 0; i < (spacing.half_pin_num); i++) {
+        for (let i = 0; i < (spacing.total_pin_num/2); i++) {
           /* Left pin to Right male pad F and B*/
           traces += `\t(segment (start ${adjust_point(spacing.top_left_pin.x + spacing.pin_to_male_pad, spacing.top_left_pin.y + i*spacing.pin_dist)}) (end ${adjust_point(spacing.top_left_pin.x, spacing.top_left_pin.y + i*spacing.pin_dist)}) (width 0.25) (layer "F.Cu") (net 1))`
           traces += `\t(segment (start ${adjust_point(spacing.top_left_pin.x + spacing.pin_to_male_pad, spacing.top_left_pin.y + i*spacing.pin_dist)}) (end ${adjust_point(spacing.top_left_pin.x, spacing.top_left_pin.y + i*spacing.pin_dist)}) (width 0.25) (layer "B.Cu") (net 1))`
