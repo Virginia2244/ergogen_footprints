@@ -18,6 +18,7 @@ module.exports = {
     hotswap: false,
     reverse: false,
     keycaps: false,
+    traces: false,
     from: undefined,
     to: undefined
   },
@@ -73,12 +74,68 @@ module.exports = {
           `
       }
     }
+        /*I stole get_at_coordinates() and adjust_point() from infused-kim's guide at https://nilnil.notion.site/Convert-Kicad-Footprints-to-Ergogen-8340ce87ad554c69af4e3f92bc9a0898
+    I have no idea how it works. I am pretty sure that it interfaces with the other ergogen code in fancy ways.
+    I do know that get_at_coordinates() is a helper funciton for adjust_point*/
+    const get_at_coordinates = () => {
+    const pattern = /\(at (-?[\d\.]*) (-?[\d\.]*) (-?[\d\.]*)\)/;
+    const matches = p.at.match(pattern);
+    if (matches && matches.length == 4) {
+        return [parseFloat(matches[1]), parseFloat(matches[2]), parseFloat(matches[3])];
+    } else {
+        return null;
+    }
+    }
+  
+    /*Call adjust_point if you want to make something move that is outisde of the main body of the footprint. Aka after the ')' in the return statement*/
+    const adjust_point = (x, y) => {
+    const at_l = get_at_coordinates();
+    if(at_l == null) {
+        throw new Error(
+        `Could not get x and y coordinates from p.at: ${p.at}`
+        );
+    }
+    const at_x = at_l[0];
+    const at_y = at_l[1];
+    const at_angle = at_l[2];
+    const adj_x = at_x + x;
+    const adj_y = at_y + y;
+
+    const radians = (Math.PI / 180) * at_angle,
+        cos = Math.cos(radians),
+        sin = Math.sin(radians),
+        nx = (cos * (adj_x - at_x)) + (sin * (adj_y - at_y)) + at_x,
+        ny = (cos * (adj_y - at_y)) - (sin * (adj_x - at_x)) + at_y;
+
+    const point_str = `${nx.toFixed(2)} ${ny.toFixed(2)}`;
+    return point_str;
+    }
+
+    const thru_holes = `
+    (pad 2 thru_hole circle (at -1.5 -3) (size 0.8 0.8) (drill 0.4) (layers *.Cu *.Mask))
+    (pad 2 thru_hole circle (at 7 2.5) (size 0.8 0.8) (drill 0.4) (layers *.Cu *.Mask))
+    
+    `
+
+    const traces = `
+    (segment (start ${adjust_point(3.275, -5.95)}) (end ${adjust_point(1.5, -3)}) (width 0.25) (layer "F.Cu") (net 1))
+    (segment (start ${adjust_point(-3.275, -5.95)}) (end ${adjust_point(-1.5, -3)}) (width 0.25) (layer "B.Cu") (net 1))
+    (segment (start ${adjust_point(1.5, -3)}) (end ${adjust_point(-1.5, -3)}) (width 0.25) (layer "F.Cu") (net 1))
+
+    (segment (start ${adjust_point(8.275, -3.75)}) (end ${adjust_point(7, 2.5)}) (width 0.25) (layer "B.Cu") (net 1))
+    (segment (start ${adjust_point(-8.275, -3.75)}) (end ${adjust_point(-7, 2.5)}) (width 0.25) (layer "F.Cu") (net 1))
+    (segment (start ${adjust_point(7, 2.5)}) (end ${adjust_point(-7, 2.5)}) (width 0.25) (layer "F.Cu") (net 1))
+    
+    `
+
     if(p.reverse) {
       return `
         ${standard}
         ${p.keycaps ? keycap : ''}
         ${pins('-', '', 'B')}
-        ${pins('', '-', 'F')})
+        ${pins('', '-', 'F')}
+        ${p.traces ? thru_holes: ''})
+        ${p.traces ? traces: ''}
         `
     } else {
       return `
