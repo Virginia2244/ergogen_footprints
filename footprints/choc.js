@@ -47,14 +47,14 @@ module.exports = {
       ${''/* stabilizers */}
       (pad "" np_thru_hole circle (at 5.5 0) (size 1.7018 1.7018) (drill 1.7018) (layers *.Cu *.Mask))
       (pad "" np_thru_hole circle (at -5.5 0) (size 1.7018 1.7018) (drill 1.7018) (layers *.Cu *.Mask))
-      `
+    `
     const keycap = `
       ${'' /* keycap marks */}
       (fp_line (start -9 -8.5) (end 9 -8.5) (layer Dwgs.User) (width 0.15))
       (fp_line (start 9 -8.5) (end 9 8.5) (layer Dwgs.User) (width 0.15))
       (fp_line (start 9 8.5) (end -9 8.5) (layer Dwgs.User) (width 0.15))
       (fp_line (start -9 8.5) (end -9 -8.5) (layer Dwgs.User) (width 0.15))
-      `
+    `
     function pins(def_neg, def_pos, def_side) {
       if(p.hotswap) {
         return `
@@ -74,7 +74,7 @@ module.exports = {
           `
       }
     }
-        /*I stole get_at_coordinates() and adjust_point() from infused-kim's guide at https://nilnil.notion.site/Convert-Kicad-Footprints-to-Ergogen-8340ce87ad554c69af4e3f92bc9a0898
+    /*I stole get_at_coordinates() and adjust_point() from infused-kim's guide at https://nilnil.notion.site/Convert-Kicad-Footprints-to-Ergogen-8340ce87ad554c69af4e3f92bc9a0898
     I have no idea how it works. I am pretty sure that it interfaces with the other ergogen code in fancy ways.
     I do know that get_at_coordinates() is a helper funciton for adjust_point*/
     const get_at_coordinates = () => {
@@ -114,7 +114,6 @@ module.exports = {
     const thru_holes = `
     (pad 2 thru_hole circle (at -1.5 -3) (size 0.8 0.8) (drill 0.4) (layers *.Cu *.Mask))
     (pad 2 thru_hole circle (at 7 2.5) (size 0.8 0.8) (drill 0.4) (layers *.Cu *.Mask))
-    
     `
 
     const traces = `
@@ -125,7 +124,6 @@ module.exports = {
     (segment (start ${adjust_point(8.275, -3.75)}) (end ${adjust_point(7, 2.5)}) (width 0.25) (layer "B.Cu") (net 1))
     (segment (start ${adjust_point(-8.275, -3.75)}) (end ${adjust_point(-7, 2.5)}) (width 0.25) (layer "F.Cu") (net 1))
     (segment (start ${adjust_point(7, 2.5)}) (end ${adjust_point(-7, 2.5)}) (width 0.25) (layer "F.Cu") (net 1))
-    
     `
 
     if(p.reverse) {
