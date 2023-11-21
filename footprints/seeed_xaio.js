@@ -277,7 +277,7 @@ module.exports = {
       /* Code for hte reversable footprints */
       const standard = `
 ${'' /* Add the kicad_mod content here*/}
-(footprint "xiao-ble-tht" (version 20211014) (generator pcbnew)
+(footprint "xiao-ble-tht" (generator pcbnew)
   ${p.at /* parametric position */}
   (layer "F.Cu")
   (tedit 62108D0B)
@@ -291,10 +291,10 @@ ${'' /* Add the kicad_mod content here*/}
   (fp_line (start -8.9 -8.5) (end -8.9 8.5) (layer "F.SilkS") (width 0.127))
   (fp_line (start 6.9 -10.5) (end -6.9 -10.5) (layer "F.SilkS") (width 0.127))
   (fp_line (start -6.9 10.5) (end 6.9 10.5) (layer "F.SilkS") (width 0.127))
-  (fp_arc (start 8.9 8.5) (mid 8.314214 9.914214) (end 6.9 10.5) (layer "F.SilkS") (width 0.127))
-  (fp_arc (start 6.9 -10.5) (mid 8.301491 -9.901491) (end 8.9 -8.5) (layer "F.SilkS") (width 0.127))
-  (fp_arc (start -6.9 10.5) (mid -8.301423 9.901423) (end -8.9 8.5) (layer "F.SilkS") (width 0.127))
-  (fp_arc (start -8.9 -8.5) (mid -8.301491 -9.901491) (end -6.9 -10.5) (layer "F.SilkS") (width 0.127))
+  (fp_arc (start 6.9 8.5)   (end 6.9 10.5) (angle -90) (layer "F.SilkS") (width 0.127))
+  (fp_arc (start 6.9 -8.5) (end 8.9 -8.5) (angle -90) (layer "F.SilkS") (width 0.127))
+  (fp_arc (start -6.9 8.5) (end -8.9 8.5) (angle -90) (layer "F.SilkS") (width 0.127))
+  (fp_arc (start -6.9 -8.5) (end -6.9 -10.5) (angle -90) (layer "F.SilkS") (width 0.127))
 
 ${'' /*Getting the through holes*/}
 ${get_thru_hole()}
@@ -304,7 +304,7 @@ ${get_thru_hole()}
       /* The code for the reversable footprint */
       const reversable_txt = `
 (
-  footprint "xiao-ble-tht" (version 20211014) (generator pcbnew)
+  footprint "xiao-ble-tht" (generator pcbnew)
     ${p.at /* parametric position */}
     (layer "F.Cu")
     (tedit 62108D0B)
@@ -318,10 +318,10 @@ ${get_thru_hole()}
     (fp_line (start -8.9 -8.5) (end -8.9 8.5) (layer "F.SilkS") (width 0.127))
     (fp_line (start 6.9 -10.5) (end -6.9 -10.5) (layer "F.SilkS") (width 0.127))
     (fp_line (start -6.9 10.5) (end 6.9 10.5) (layer "F.SilkS") (width 0.127))
-    (fp_arc (start 8.9 8.5) (mid 8.314214 9.914214) (end 6.9 10.5) (layer "F.SilkS") (width 0.127))
-    (fp_arc (start 6.9 -10.5) (mid 8.301491 -9.901491) (end 8.9 -8.5) (layer "F.SilkS") (width 0.127))
-    (fp_arc (start -6.9 10.5) (mid -8.301423 9.901423) (end -8.9 8.5) (layer "F.SilkS") (width 0.127))
-    (fp_arc (start -8.9 -8.5) (mid -8.301491 -9.901491) (end -6.9 -10.5) (layer "F.SilkS") (width 0.127))
+    (fp_arc (start 6.9 8.5)   (end 6.9 10.5) (angle -90) (layer "F.SilkS") (width 0.127))
+    (fp_arc (start 6.9 -8.5) (end 8.9 -8.5) (angle -90) (layer "F.SilkS") (width 0.127))
+    (fp_arc (start -6.9 8.5) (end -8.9 8.5) (angle -90) (layer "F.SilkS") (width 0.127))
+    (fp_arc (start -6.9 -8.5) (end -6.9 -10.5) (angle -90) (layer "F.SilkS") (width 0.127))
 
     ${'' /*Box outlining the back usb-c port*/}
     (fp_rect (start 4.5 -4.5) (end -4.5 -11.92403) (layer "B.SilkS") (width 0.127) (fill none))
