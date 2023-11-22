@@ -117,13 +117,13 @@ module.exports = {
     `
 
     const traces = `
-    (segment (start ${adjust_point(3.275, -5.95)}) (end ${adjust_point(1.5, -3)}) (width 0.25) (layer "F.Cu") (net 1))
-    (segment (start ${adjust_point(-3.275, -5.95)}) (end ${adjust_point(-1.5, -3)}) (width 0.25) (layer "B.Cu") (net 1))
-    (segment (start ${adjust_point(1.5, -3)}) (end ${adjust_point(-1.5, -3)}) (width 0.25) (layer "F.Cu") (net 1))
+    (segment (start ${adjust_point(3.275, -5.95)}) (end ${adjust_point(1.5, -3)}) (width 0.25) (layer "F.Cu"))
+    (segment (start ${adjust_point(-3.275, -5.95)}) (end ${adjust_point(-1.5, -3)}) (width 0.25) (layer "B.Cu"))
+    (segment (start ${adjust_point(1.5, -3)}) (end ${adjust_point(-1.5, -3)}) (width 0.25) (layer "F.Cu"))
 
-    (segment (start ${adjust_point(8.275, -3.75)}) (end ${adjust_point(7, 2.5)}) (width 0.25) (layer "B.Cu") (net 1))
-    (segment (start ${adjust_point(-8.275, -3.75)}) (end ${adjust_point(-7, 2.5)}) (width 0.25) (layer "F.Cu") (net 1))
-    (segment (start ${adjust_point(7, 2.5)}) (end ${adjust_point(-7, 2.5)}) (width 0.25) (layer "F.Cu") (net 1))
+    (segment (start ${adjust_point(8.275, -3.75)}) (end ${adjust_point(7, 2.5)}) (width 0.25) (layer "B.Cu"))
+    (segment (start ${adjust_point(-8.275, -3.75)}) (end ${adjust_point(-7, 2.5)}) (width 0.25) (layer "F.Cu"))
+    (segment (start ${adjust_point(7, 2.5)}) (end ${adjust_point(-7, 2.5)}) (width 0.25) (layer "F.Cu"))
     `
 
     if(p.reverse) {
