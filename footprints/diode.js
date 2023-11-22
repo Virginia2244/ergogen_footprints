@@ -80,10 +80,10 @@ module.exports = {
 
     )
 
-    (segment (start ${adjust_point(-1.65, 0)}) (end ${adjust_point(-3.81, 0)}) (width 0.25) (layer "F.Cu") (net 1))
-    (segment (start ${adjust_point(-1.65, 0)}) (end ${adjust_point(-3.81, 0)}) (width 0.25) (layer "B.Cu") (net 1))
-    (segment (start ${adjust_point( 1.65, 0)}) (end ${adjust_point( 3.81, 0)}) (width 0.25) (layer "F.Cu") (net 1))
-    (segment (start ${adjust_point( 1.65, 0)}) (end ${adjust_point( 3.81, 0)}) (width 0.25) (layer "B.Cu") (net 1))
+    (segment (start ${adjust_point(-1.65, 0)}) (end ${adjust_point(-3.81, 0)}) (width 0.25) (layer "F.Cu"))
+    (segment (start ${adjust_point(-1.65, 0)}) (end ${adjust_point(-3.81, 0)}) (width 0.25) (layer "B.Cu"))
+    (segment (start ${adjust_point( 1.65, 0)}) (end ${adjust_point( 3.81, 0)}) (width 0.25) (layer "F.Cu"))
+    (segment (start ${adjust_point( 1.65, 0)}) (end ${adjust_point( 3.81, 0)}) (width 0.25) (layer "B.Cu"))
     `
     }
 }
