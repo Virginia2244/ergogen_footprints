@@ -327,14 +327,14 @@ ${get_thru_hole()}
     (fp_rect (start 4.5 -4.5) (end -4.5 -11.92403) (layer "B.SilkS") (width 0.127) (fill none))
 
     ${'' /*Box outlining the back body*/}
-    (fp_line (start 8.9 8.5) (end 8.9 -8.5) (layer "B.SilkS") (width 0.127))
-    (fp_line (start -8.9 -8.5) (end -8.9 8.5) (layer "B.SilkS") (width 0.127))
+    (fp_line (start 8.9 8.5)   (end 8.9 -8.5)   (layer "B.SilkS") (width 0.127))
+    (fp_line (start -8.9 -8.5) (end -8.9 8.5)   (layer "B.SilkS") (width 0.127))
     (fp_line (start 6.9 -10.5) (end -6.9 -10.5) (layer "B.SilkS") (width 0.127))
-    (fp_line (start -6.9 10.5) (end 6.9 10.5) (layer "B.SilkS") (width 0.127))
-    (fp_arc (start 8.9 8.5) (mid 8.314214 9.914214) (end 6.9 10.5) (layer "B.SilkS") (width 0.127))
-    (fp_arc (start 6.9 -10.5) (mid 8.301491 -9.901491) (end 8.9 -8.5) (layer "B.SilkS") (width 0.127))
-    (fp_arc (start -6.9 10.5) (mid -8.301423 9.901423) (end -8.9 8.5) (layer "B.SilkS") (width 0.127))
-    (fp_arc (start -8.9 -8.5) (mid -8.301491 -9.901491) (end -6.9 -10.5) (layer "B.SilkS") (width 0.127))
+    (fp_line (start -6.9 10.5) (end 6.9 10.5)   (layer "B.SilkS") (width 0.127))
+    (fp_arc  (start 6.9 8.5)   (end 6.9 10.5)   (angle -90) (layer "B.SilkS") (width 0.127))
+    (fp_arc  (start 6.9 -8.5)  (end 8.9 -8.5)   (angle -90) (layer "B.SilkS") (width 0.127))
+    (fp_arc  (start -6.9 8.5)  (end -8.9 8.5)   (angle -90) (layer "B.SilkS") (width 0.127))
+    (fp_arc  (start -6.9 -8.5) (end -6.9 -10.5) (angle -90) (layer "B.SilkS") (width 0.127))
 
     ${'' /*Getting the through holes*/}
     ${get_thru_hole()}
