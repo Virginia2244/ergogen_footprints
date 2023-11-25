@@ -130,6 +130,11 @@ module.exports = {
       Front means the front layer of the pcb while back means the back layer of the pcb.
       left and right mean the left and right side of the microcontroller*/
       for (let i = 0; i < (spacing.total_pin_num/2); i++) {
+        if(i < 3){
+          //Through holes
+          solder_pads += `(pad ${i}                             thru_hole oval (at ${spacing.top_left_pin.x}  ${spacing.top_left_pin.y + (i)*spacing.pin_dist}  ${p.rot})       (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask) ${p.local_net(i).str})\n`
+          solder_pads += `(pad ${spacing.total_pin_num - 1 - i} thru_hole oval (at ${spacing.top_right_pin.x} ${spacing.top_right_pin.y + (i)*spacing.pin_dist} ${180 + p.rot}) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask) ${p.local_net(spacing.total_pin_num - 1 - i).str})\n`
+        
           //Left VIAS
           solder_pads += `\t\t(pad ${i} thru_hole circle (at ${spacing.top_left_pin.x + spacing.pin_to_via} ${spacing.top_left_pin.y + (i)*spacing.pin_dist}) (size 0.8 0.8) (drill 0.4) (layers *.Cu *.Mask) ${pin_nets[i][0]})\n`
           
@@ -168,6 +173,11 @@ module.exports = {
           //Right Front male
           solder_pads += `\t\t(pad ${spacing.total_pin_num - 1 - i} smd custom (at ${spacing.top_right_pin.x - spacing.pin_to_male_pad} ${spacing.top_right_pin.y + (i)*spacing.pin_dist} ${180 + p.rot}) (size 0.2 0.2) (layers F.Cu F.Mask) ${p.local_net(spacing.total_pin_num - 1 - i).str}`
           solder_pads += male_pad
+        } else {
+          //Through holes
+          solder_pads += `(pad ${i}                             thru_hole oval (at ${spacing.top_left_pin.x}  ${spacing.top_left_pin.y + (i)*spacing.pin_dist}  ${p.rot})       (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask) ${pin_nets[i][0]})\n`
+          solder_pads += `(pad ${spacing.total_pin_num - 1 - i} thru_hole oval (at ${spacing.top_right_pin.x} ${spacing.top_right_pin.y + (i)*spacing.pin_dist} ${180 + p.rot}) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask) ${pin_nets[i][1]})\n`
+        }
         }
         return solder_pads
       }
@@ -213,7 +223,7 @@ module.exports = {
       const get_traces = () => {
         let traces = ``
         /*Starts by generating all of the traces for one row, then itterates down all of the pins.*/
-        for (let i = 0; i < (spacing.total_pin_num/2); i++) {
+        for (let i = 0; i < (spacing.total_pin_num/2) && i < 3; i++) {
           /* Left pin to Right male pad F and B*/
           traces += `\t(segment (start ${adjust_point(spacing.top_left_pin.x + spacing.pin_to_male_pad, spacing.top_left_pin.y + i*spacing.pin_dist)}) (end ${adjust_point(spacing.top_left_pin.x, spacing.top_left_pin.y + i*spacing.pin_dist)}) (width 0.25) (layer "F.Cu"))`
           traces += `\t(segment (start ${adjust_point(spacing.top_left_pin.x + spacing.pin_to_male_pad, spacing.top_left_pin.y + i*spacing.pin_dist)}) (end ${adjust_point(spacing.top_left_pin.x, spacing.top_left_pin.y + i*spacing.pin_dist)}) (width 0.25) (layer "B.Cu"))`
@@ -336,10 +346,7 @@ ${get_thru_hole()}
     (fp_arc  (start -6.9 8.5)  (end -8.9 8.5)   (angle -90) (layer "B.SilkS") (width 0.127))
     (fp_arc  (start -6.9 -8.5) (end -6.9 -10.5) (angle -90) (layer "B.SilkS") (width 0.127))
 
-    ${'' /*Getting the through holes*/}
-    ${get_thru_hole()}
-
-    ${'' /*Getting the solder pads*/}
+    ${'' /*Getting the through holes and the solder pads*/}
     ${get_solder_pads()}      
 
     ${'' /* Getting the lables */}
