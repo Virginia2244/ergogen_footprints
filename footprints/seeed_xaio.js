@@ -4,6 +4,7 @@ module.exports = {
       label: {type: 'boolean', value: true},
       instructions: {type: 'boolean', value: true},
       traces: {type: 'boolean', value: true},
+      reversable_pins: {type: 'boolean', value: 3},
       P0: {type: 'net', value: 'P0'},
       P1: {type: 'net', value: 'P1'},
       P2: {type: 'net', value: 'P2'},
@@ -130,7 +131,7 @@ module.exports = {
       Front means the front layer of the pcb while back means the back layer of the pcb.
       left and right mean the left and right side of the microcontroller*/
       for (let i = 0; i < (spacing.total_pin_num/2); i++) {
-        if(i < 3){
+        if(i < p.reversable_pins){
           //Through holes
           solder_pads += `(pad ${i}                             thru_hole oval (at ${spacing.top_left_pin.x}  ${spacing.top_left_pin.y + (i)*spacing.pin_dist}  ${p.rot})       (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask) ${p.local_net(i).str})\n`
           solder_pads += `(pad ${spacing.total_pin_num - 1 - i} thru_hole oval (at ${spacing.top_right_pin.x} ${spacing.top_right_pin.y + (i)*spacing.pin_dist} ${180 + p.rot}) (size 2.75 1.8) (drill 1 (offset -0.475 0)) (layers *.Cu *.Mask) ${p.local_net(spacing.total_pin_num - 1 - i).str})\n`
@@ -223,7 +224,7 @@ module.exports = {
       const get_traces = () => {
         let traces = ``
         /*Starts by generating all of the traces for one row, then itterates down all of the pins.*/
-        for (let i = 0; i < (spacing.total_pin_num/2) && i < 3; i++) {
+        for (let i = 0; i < (spacing.total_pin_num/2) && i < p.reversable_pins; i++) {
           /* Left pin to Right male pad F and B*/
           traces += `\t(segment (start ${adjust_point(spacing.top_left_pin.x + spacing.pin_to_male_pad, spacing.top_left_pin.y + i*spacing.pin_dist)}) (end ${adjust_point(spacing.top_left_pin.x, spacing.top_left_pin.y + i*spacing.pin_dist)}) (width 0.25) (layer "F.Cu"))`
           traces += `\t(segment (start ${adjust_point(spacing.top_left_pin.x + spacing.pin_to_male_pad, spacing.top_left_pin.y + i*spacing.pin_dist)}) (end ${adjust_point(spacing.top_left_pin.x, spacing.top_left_pin.y + i*spacing.pin_dist)}) (width 0.25) (layer "B.Cu"))`

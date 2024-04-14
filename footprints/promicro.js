@@ -5,6 +5,7 @@ module.exports = {
       instructions: {type: 'boolean', value: true},
       traces: {type: 'boolean', value: true},
       view: {type: 'boolean', value: true},
+      reversable_pins: {type: 'boolean', value: 4},
 
       P1: {type: 'net', value: 'P1'},
       P0: {type: 'net', value: 'P0'},
@@ -96,9 +97,14 @@ module.exports = {
         /* Starts at the top two microcontrollers and goes down. 
         It makes the nets internal if it reversable and straight to the pin_nets if not.*/
         for (let i = 0; i < spacing.total_pin_num/2; i++) {
-          thru_hole += `(pad ${i}                             thru_hole oval (at ${spacing.top_left_pin.x}  ${spacing.top_left_pin.y + (i)*spacing.pin_dist}  ${p.rot})       (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${p.reversable ? p.local_net(i).str : pin_nets[i][0]})\n`
-          thru_hole += `(pad ${spacing.total_pin_num - 1 - i} thru_hole oval (at ${spacing.top_right_pin.x} ${spacing.top_right_pin.y + (i)*spacing.pin_dist} ${180 + p.rot}) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${p.reversable ? p.local_net(spacing.total_pin_num - 1 - i).str : pin_nets[i][1]})\n`
-        }
+          if ( i < p.reversable_pins){
+            thru_hole += `(pad ${i}                             thru_hole oval (at ${spacing.top_left_pin.x}  ${spacing.top_left_pin.y + (i)*spacing.pin_dist}  ${p.rot})       (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${p.reversable ? p.local_net(i).str : pin_nets[i][0]})\n`
+            thru_hole += `(pad ${spacing.total_pin_num - 1 - i} thru_hole oval (at ${spacing.top_right_pin.x} ${spacing.top_right_pin.y + (i)*spacing.pin_dist} ${180 + p.rot}) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${p.reversable ? p.local_net(spacing.total_pin_num - 1 - i).str : pin_nets[i][1]})\n`
+          } else {
+            thru_hole += `(pad ${i}                             thru_hole oval (at ${spacing.top_left_pin.x}  ${spacing.top_left_pin.y + (i)*spacing.pin_dist}  ${p.rot})       (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${pin_nets[i][0]})\n`
+            thru_hole += `(pad ${spacing.total_pin_num - 1 - i} thru_hole oval (at ${spacing.top_right_pin.x} ${spacing.top_right_pin.y + (i)*spacing.pin_dist} ${180 + p.rot}) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${pin_nets[i][1]})\n`
+          }
+          }
         return thru_hole
       }
 
@@ -147,7 +153,7 @@ module.exports = {
       /*It starts with making the first row then itterates down.
       Front means the front layer of the pcb while back means the back layer of the pcb.
       left and right mean the left and right side of the microcontroller*/
-      for (let i = 0; i < (spacing.total_pin_num/2); i++) {
+      for (let i = 0; i < p.reversable_pins; i++) {
           //Left VIAS
           solder_pads += `\t\t(pad ${i} thru_hole circle (at ${spacing.top_left_pin.x + spacing.pin_to_via} ${spacing.top_left_pin.y + (i)*spacing.pin_dist}) (size 0.8 0.8) (drill 0.4) (layers *.Cu *.Mask) ${pin_nets[i][0]})\n`
           
@@ -231,7 +237,7 @@ module.exports = {
       const get_traces = () => {
         let traces = ``
         /*Starts by generating all of the traces for one row, then itterates down all of the pins.*/
-        for (let i = 0; i < (spacing.total_pin_num/2); i++) {
+        for (let i = 0; i < p.reversable_pins; i++) {
           /* Left pin to Right male pad F and B*/
           traces += `\t(segment (start ${adjust_point(spacing.top_left_pin.x + spacing.pin_to_male_pad, spacing.top_left_pin.y + i*spacing.pin_dist)}) (end ${adjust_point(spacing.top_left_pin.x, spacing.top_left_pin.y + i*spacing.pin_dist)}) (width 0.25) (layer "F.Cu"))`
           traces += `\t(segment (start ${adjust_point(spacing.top_left_pin.x + spacing.pin_to_male_pad, spacing.top_left_pin.y + i*spacing.pin_dist)}) (end ${adjust_point(spacing.top_left_pin.x, spacing.top_left_pin.y + i*spacing.pin_dist)}) (width 0.25) (layer "B.Cu"))`
