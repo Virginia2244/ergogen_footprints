@@ -15,9 +15,76 @@ module.exports = {
       y: 1.6,
     }
     const via_spacing = {
-      x: 2.5,
-      y: 3,
+      x: 1.5,
+      y: 2.7,
     }
+
+    /*I stole get_at_coordinates() and adjust_point() from infused-kim's guide at https://nilnil.notion.site/Convert-Kicad-Footprints-to-Ergogen-8340ce87ad554c69af4e3f92bc9a0898
+    I have no idea how it works. I am pretty sure that it interfaces with the other ergogen code in fancy ways.
+    I do know that get_at_coordinates() is a helper funciton for adjust_point*/
+    const get_at_coordinates = () => {
+      const pattern = /\(at (-?[\d\.]*) (-?[\d\.]*) (-?[\d\.]*)\)/;
+      const matches = p.at.match(pattern);
+      if (matches && matches.length == 4) {
+          return [parseFloat(matches[1]), parseFloat(matches[2]), parseFloat(matches[3])];
+      } else {
+          return null;
+      }
+    }
+
+    /*Call adjust_point if you want to make something move that is outisde of the main body of the footprint. Aka after the ')' in the return statement*/
+    const adjust_point = (x, y) => {
+      const at_l = get_at_coordinates();
+      if(at_l == null) {
+          throw new Error(
+          `Could not get x and y coordinates from p.at: ${p.at}`
+          );
+      }
+      const at_x = at_l[0];
+      const at_y = at_l[1];
+      const at_angle = at_l[2];
+      const adj_x = at_x + x;
+      const adj_y = at_y + y;
+
+      const radians = (Math.PI / 180) * at_angle,
+          cos = Math.cos(radians),
+          sin = Math.sin(radians),
+          nx = (cos * (adj_x - at_x)) + (sin * (adj_y - at_y)) + at_x,
+          ny = (cos * (adj_y - at_y)) - (sin * (adj_x - at_x)) + at_y;
+
+      const point_str = `${nx.toFixed(2)} ${ny.toFixed(2)}`;
+      return point_str;
+    }
+
+    const traces = `
+    ${'' /* Back Layer traces */}
+    (segment (start ${adjust_point(footprint_spacing.x, footprint_spacing.y)}) (end ${adjust_point(via_spacing.x, via_spacing.y)}) (width 0.25) (layer "B.Cu"))
+    (segment (start ${adjust_point(footprint_spacing.x, -footprint_spacing.y)}) (end ${adjust_point(via_spacing.x, -via_spacing.y)}) (width 0.25) (layer "B.Cu"))
+    (segment (start ${adjust_point(-footprint_spacing.x, footprint_spacing.y)}) (end ${adjust_point(-via_spacing.x, via_spacing.y)}) (width 0.25) (layer "B.Cu"))
+    (segment (start ${adjust_point(-footprint_spacing.x, -footprint_spacing.y)}) (end ${adjust_point(-via_spacing.x, -via_spacing.y)}) (width 0.25) (layer "B.Cu"))
+    
+    ${'' /* Front layer outer*/}
+    (segment (start ${adjust_point(-via_spacing.x, -via_spacing.y)}) (end ${adjust_point(-.775, -3.425)}) (width 0.25) (layer "F.Cu"))
+    (segment (start ${adjust_point(-.775, -3.425)}) (end ${adjust_point(1.8, -3.435)}) (width 0.25) (layer "F.Cu"))
+    (segment (start ${adjust_point(1.8, -3.435)}) (end ${adjust_point(2.9, -2.325)}) (width 0.25) (layer "F.Cu"))
+    (segment (start ${adjust_point(2.9, -2.325)}) (end ${adjust_point(footprint_spacing.x, -footprint_spacing.y)}) (width 0.25) (layer "F.Cu"))
+
+    (segment (start ${adjust_point(-via_spacing.x, via_spacing.y)}) (end ${adjust_point(-.775, 3.425)}) (width 0.25) (layer "F.Cu"))
+    (segment (start ${adjust_point(-.775, 3.425)}) (end ${adjust_point(1.8, 3.435)}) (width 0.25) (layer "F.Cu"))
+    (segment (start ${adjust_point(1.8, 3.435)}) (end ${adjust_point(2.9, 2.325)}) (width 0.25) (layer "F.Cu"))
+    (segment (start ${adjust_point(2.9, 2.325)}) (end ${adjust_point(footprint_spacing.x, footprint_spacing.y)}) (width 0.25) (layer "F.Cu"))
+
+
+    ${'' /* Front layer inner */}
+    (segment (start ${adjust_point(-footprint_spacing.x, -footprint_spacing.y)}) (end ${adjust_point(-2.55, -1.95)}) (width 0.25) (layer "F.Cu"))
+    (segment (start ${adjust_point(-2.55, -1.95)}) (end ${adjust_point(0.75, -1.95)}) (width 0.25) (layer "F.Cu"))
+    (segment (start ${adjust_point(0.75, -1.95)}) (end ${adjust_point(via_spacing.x, -via_spacing.y)}) (width 0.25) (layer "F.Cu"))
+
+    (segment (start ${adjust_point(-footprint_spacing.x, footprint_spacing.y)}) (end ${adjust_point(-2.55, 1.95)}) (width 0.25) (layer "F.Cu"))
+    (segment (start ${adjust_point(-2.55, 1.95)}) (end ${adjust_point(0.75, 1.95)}) (width 0.25) (layer "F.Cu"))
+    (segment (start ${adjust_point(0.75, 1.95)}) (end ${adjust_point(via_spacing.x, via_spacing.y)}) (width 0.25) (layer "F.Cu"))
+
+    `
 
     const standard = `
     
@@ -123,7 +190,7 @@ module.exports = {
 `
     if (p.reverse) {
       return `
-            ${double_sided}
+            ${double_sided} ${traces}
           `
     } else {
         return `
